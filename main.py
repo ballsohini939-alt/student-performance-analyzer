@@ -40,6 +40,8 @@ from performance_comparison import compare_students
 
 from class_dashboard import display_class_dashboard
 
+from performance_trend import display_performance_history
+
 
 def add_student():
     """
@@ -91,6 +93,7 @@ def add_student():
     for i in range(number):
 
         while True:
+
             subject = input(
                 f"\nEnter subject {i + 1} name: "
             ).strip()
@@ -102,7 +105,9 @@ def add_student():
             break
 
         while True:
+
             try:
+
                 marks = float(
                     input(
                         f"Enter marks for {subject}: "
@@ -124,6 +129,7 @@ def add_student():
                 )
 
             except ValueError:
+
                 print("Please enter a valid number.")
 
     # -----------------------------------------
@@ -192,6 +198,7 @@ def add_student():
     )
 
     while True:
+
         try:
 
             study_hours = float(
@@ -211,6 +218,7 @@ def add_student():
             break
 
         except ValueError:
+
             print("Please enter a valid number.")
 
     # -----------------------------------------
@@ -252,10 +260,11 @@ def show_menu():
     print("4. Student Profile")
     print("5. Student Comparison")
     print("6. Class Performance Dashboard")
-    print("7. View Analytics")
-    print("8. Pandas Data Analysis")
-    print("9. Data Visualizations")
-    print("10. Exit")
+    print("7. Performance Trend")
+    print("8. View Analytics")
+    print("9. Pandas Data Analysis")
+    print("10. Data Visualizations")
+    print("11. Exit")
 
 
 def display_learning_recommendations():
@@ -272,13 +281,13 @@ def display_learning_recommendations():
 
         with open(
             "data/students.csv",
-            "r",
-            encoding="utf-8"
+            "r"
         ) as file:
 
             reader = csv.DictReader(file)
 
             for row in reader:
+
                 students.append(row)
 
     except FileNotFoundError:
@@ -366,8 +375,7 @@ def view_analytics():
 
         with open(
             "data/students.csv",
-            "r",
-            encoding="utf-8"
+            "r"
         ) as file:
 
             reader = csv.DictReader(file)
@@ -427,8 +435,7 @@ def view_analytics():
 
         with open(
             "data/study_hours.csv",
-            "r",
-            encoding="utf-8"
+            "r"
         ) as file:
 
             reader = csv.DictReader(file)
@@ -617,8 +624,7 @@ def view_analytics():
 
         with open(
             "data/subject_marks.csv",
-            "r",
-            encoding="utf-8"
+            "r"
         ) as file:
 
             reader = csv.DictReader(file)
@@ -1431,10 +1437,30 @@ def main():
             display_class_dashboard()
 
         # -------------------------------------
-        # Existing Analytics
+        # Performance Trend
         # -------------------------------------
 
         elif choice == "7":
+
+            name = input(
+                "Enter student name: "
+            ).strip()
+
+            if name:
+
+                display_performance_history(name)
+
+            else:
+
+                print(
+                    "\nStudent name cannot be empty."
+                )
+
+        # -------------------------------------
+        # Existing Analytics
+        # -------------------------------------
+
+        elif choice == "8":
 
             view_analytics()
 
@@ -1442,7 +1468,7 @@ def main():
         # Pandas Analytics
         # -------------------------------------
 
-        elif choice == "8":
+        elif choice == "9":
 
             view_pandas_analysis()
 
@@ -1450,7 +1476,7 @@ def main():
         # Data Visualizations
         # -------------------------------------
 
-        elif choice == "9":
+        elif choice == "10":
 
             visualization_menu()
 
@@ -1458,7 +1484,7 @@ def main():
         # Exit
         # -------------------------------------
 
-        elif choice == "10":
+        elif choice == "11":
 
             print(
                 "\nThank you for using "
@@ -1475,7 +1501,7 @@ def main():
 
             print(
                 "\nInvalid choice. "
-                "Please select 1-10."
+                "Please select 1-11."
             )
 
 
