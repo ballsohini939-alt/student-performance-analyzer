@@ -1,5 +1,4 @@
 from student import Student
-
 from analyzer import calculate_grade
 
 from utils import (
@@ -35,11 +34,12 @@ from visualizations import (
     show_study_hours_vs_performance
 )
 
+from student_profile import get_student_profile
+
 
 def add_student():
     """
     Add a new student or update an existing student.
-
     Stores academic performance, subject marks,
     and study hours.
     """
@@ -87,6 +87,7 @@ def add_student():
     for i in range(number):
 
         while True:
+
             subject = input(
                 f"\nEnter subject {i + 1} name: "
             ).strip()
@@ -98,7 +99,9 @@ def add_student():
             break
 
         while True:
+
             try:
+
                 marks = float(
                     input(
                         f"Enter marks for {subject}: "
@@ -106,10 +109,12 @@ def add_student():
                 )
 
                 if 0 <= marks <= 100:
+
                     student.add_subject(
                         subject,
                         marks
                     )
+
                     break
 
                 print(
@@ -118,6 +123,7 @@ def add_student():
                 )
 
             except ValueError:
+
                 print("Please enter a valid number.")
 
     # -----------------------------------------
@@ -125,6 +131,7 @@ def add_student():
     # -----------------------------------------
 
     total = student.total_marks()
+
     percentage = student.percentage()
 
     grade = calculate_grade(
@@ -170,6 +177,7 @@ def add_student():
     print("-" * 30)
 
     for subject, marks in student.subjects.items():
+
         print(
             f"{subject:<15}"
             f"{marks:.2f}"
@@ -184,7 +192,9 @@ def add_student():
     )
 
     while True:
+
         try:
+
             study_hours = float(
                 input(
                     "Enter average study hours per day: "
@@ -192,14 +202,17 @@ def add_student():
             )
 
             if study_hours < 0:
+
                 print(
                     "Study hours cannot be negative."
                 )
+
                 continue
 
             break
 
         except ValueError:
+
             print("Please enter a valid number.")
 
     # -----------------------------------------
@@ -238,10 +251,11 @@ def show_menu():
     print("1. Add Student")
     print("2. View All Students")
     print("3. Search Student")
-    print("4. View Analytics")
-    print("5. Pandas Data Analysis")
-    print("6. Data Visualizations")
-    print("7. Exit")
+    print("4. Student Profile")
+    print("5. View Analytics")
+    print("6. Pandas Data Analysis")
+    print("7. Data Visualizations")
+    print("8. Exit")
 
 
 def display_learning_recommendations():
@@ -253,6 +267,7 @@ def display_learning_recommendations():
     students = []
 
     try:
+
         import csv
 
         with open(
@@ -263,6 +278,7 @@ def display_learning_recommendations():
             reader = csv.DictReader(file)
 
             for row in reader:
+
                 students.append(row)
 
     except FileNotFoundError:
@@ -654,10 +670,13 @@ def view_analytics():
     if subject_averages:
 
         subject_average_values = {
+
             subject:
             sum(marks) / len(marks)
+
             for subject, marks
             in subject_averages.items()
+
         }
 
         strongest = max(
@@ -691,9 +710,12 @@ def view_analytics():
     if study_data:
 
         study_hours = {
+
             row["Name"]:
             float(row["StudyHours"])
+
             for row in study_data
+
         }
 
         average_hours = (
@@ -742,9 +764,12 @@ def view_analytics():
         print("-" * 28)
 
         student_percentages = {
+
             student["Name"]:
             float(student["Percentage"])
+
             for student in students
+
         }
 
         matching_data = []
@@ -780,17 +805,25 @@ def view_analytics():
         if len(matching_data) >= 2:
 
             above_average = [
+
                 score
+
                 for name, hours_value, score
                 in matching_data
+
                 if hours_value >= average_hours
+
             ]
 
             below_average = [
+
                 score
+
                 for name, hours_value, score
                 in matching_data
+
                 if hours_value < average_hours
+
             ]
 
             if above_average and below_average:
@@ -1375,10 +1408,22 @@ def main():
             search_student(name)
 
         # -------------------------------------
-        # Existing Analytics
+        # Student Profile
         # -------------------------------------
 
         elif choice == "4":
+
+            name = input(
+                "Enter student name: "
+            ).strip()
+
+            get_student_profile(name)
+
+        # -------------------------------------
+        # Existing Analytics
+        # -------------------------------------
+
+        elif choice == "5":
 
             view_analytics()
 
@@ -1386,7 +1431,7 @@ def main():
         # Pandas Analytics
         # -------------------------------------
 
-        elif choice == "5":
+        elif choice == "6":
 
             view_pandas_analysis()
 
@@ -1394,7 +1439,7 @@ def main():
         # Data Visualizations
         # -------------------------------------
 
-        elif choice == "6":
+        elif choice == "7":
 
             visualization_menu()
 
@@ -1402,7 +1447,7 @@ def main():
         # Exit
         # -------------------------------------
 
-        elif choice == "7":
+        elif choice == "8":
 
             print(
                 "\nThank you for using "
@@ -1419,7 +1464,7 @@ def main():
 
             print(
                 "\nInvalid choice. "
-                "Please select 1-7."
+                "Please select 1-8."
             )
 
 
