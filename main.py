@@ -1,66 +1,62 @@
 from student import Student
 from analyzer import calculate_grade
-
 from utils import (
     save_student,
-    save_study_hours,
     view_students,
     search_student
 )
 
 from analytics import (
-    dataset_summary,
     calculate_average,
     top_student,
-    lowest_student,
-    grade_statistics,
-    performance_categories,
-    subject_statistics,
-    strongest_subject,
-    weakest_subject,
-    average_study_hours,
-    highest_study_hours,
-    lowest_study_hours,
-    study_performance_analysis,
-    learning_insight,
-    generate_recommendations
+    grade_statistics
+)
+
+from data_analysis import (
+    pandas_class_statistics,
+    pandas_grade_distribution,
+    pandas_student_ranking,
+    pandas_subject_statistics,
+    pandas_study_statistics,
+    pandas_performance_categories,
+    pandas_top_student,
+    pandas_lowest_student,
+    pandas_study_performance,
+    pandas_correlation
 )
 
 
-def get_valid_marks(subject):
+def add_student():
     """
-    Get valid marks between 0 and 100.
+    Add a new student or update an existing student.
+    Stores academic performance, subject marks,
+    and study hours.
     """
+
+    print("\n========== ADD / UPDATE STUDENT ==========")
+
+    # -----------------------------------------
+    # Student Name
+    # -----------------------------------------
 
     while True:
 
-        try:
+        name = input(
+            "Enter student name: "
+        ).strip()
 
-            marks = float(
-                input(
-                    f"Enter marks for {subject}: "
-                )
-            )
+        if name:
+            break
 
-            if 0 <= marks <= 100:
+        print(
+            "Student name cannot be empty."
+        )
 
-                return marks
+    student = Student(name)
 
-            print(
-                "Marks must be between 0 and 100."
-            )
-
-        except ValueError:
-
-            print(
-                "Please enter a valid number."
-            )
-
-
-def get_valid_subject_count():
-    """
-    Get a valid positive number of subjects.
-    """
+    # -----------------------------------------
+    # Number of Subjects
+    # -----------------------------------------
 
     while True:
 
@@ -73,8 +69,7 @@ def get_valid_subject_count():
             )
 
             if number > 0:
-
-                return number
+                break
 
             print(
                 "Please enter at least one subject."
@@ -86,62 +81,9 @@ def get_valid_subject_count():
                 "Please enter a valid number."
             )
 
-
-def get_valid_study_hours():
-    """
-    Get valid study hours.
-    """
-
-    while True:
-
-        try:
-
-            hours = float(
-                input(
-                    "Enter average study hours "
-                    "per day: "
-                )
-            )
-
-            if hours >= 0:
-
-                return hours
-
-            print(
-                "Study hours cannot be negative."
-            )
-
-        except ValueError:
-
-            print(
-                "Please enter a valid number."
-            )
-
-
-def add_student():
-    """
-    Add or update a student's academic record.
-    """
-
-    print(
-        "\n========== ADD / UPDATE STUDENT =========="
-    )
-
-    name = input(
-        "Enter student name: "
-    ).strip()
-
-    if not name:
-
-        print(
-            "Student name cannot be empty."
-        )
-
-        return
-
-    number = get_valid_subject_count()
-
-    student = Student(name)
+    # -----------------------------------------
+    # Subject-wise Marks
+    # -----------------------------------------
 
     print(
         "\nEnter subject-wise marks:"
@@ -163,31 +105,41 @@ def add_student():
 
                 continue
 
-            # Prevent duplicate subject names
-            duplicate = any(
-                existing.lower()
-                == subject.lower()
-                for existing
-                in student.subjects
-            )
-
-            if duplicate:
-
-                print(
-                    "This subject has already "
-                    "been entered."
-                )
-
-                continue
-
             break
 
-        marks = get_valid_marks(subject)
+        while True:
 
-        student.add_subject(
-            subject,
-            marks
-        )
+            try:
+
+                marks = float(
+                    input(
+                        f"Enter marks for {subject}: "
+                    )
+                )
+
+                if 0 <= marks <= 100:
+
+                    student.add_subject(
+                        subject,
+                        marks
+                    )
+
+                    break
+
+                print(
+                    "Marks must be between "
+                    "0 and 100."
+                )
+
+            except ValueError:
+
+                print(
+                    "Please enter a valid number."
+                )
+
+    # -----------------------------------------
+    # Performance Calculation
+    # -----------------------------------------
 
     total = student.total_marks()
 
@@ -196,6 +148,10 @@ def add_student():
     grade = calculate_grade(
         percentage
     )
+
+    # -----------------------------------------
+    # Performance Report
+    # -----------------------------------------
 
     print(
         "\n========== PERFORMANCE REPORT =========="
@@ -238,24 +194,51 @@ def add_student():
     for subject, marks in student.subjects.items():
 
         print(
-            f"{subject:<15}{marks:.2f}"
+            f"{subject:<15}"
+            f"{marks:.2f}"
         )
 
-    # Save student and subject records
-    save_student(
-        student,
-        grade
-    )
+    # -----------------------------------------
+    # Study Hours
+    # -----------------------------------------
 
-    # Save study information
     print(
         "\n========== LEARNING HABITS =========="
     )
 
-    study_hours = get_valid_study_hours()
+    while True:
 
-    save_study_hours(
-        student.name,
+        try:
+
+            study_hours = float(
+                input(
+                    "Enter average study hours per day: "
+                )
+            )
+
+            if study_hours < 0:
+
+                print(
+                    "Study hours cannot be negative."
+                )
+
+                continue
+
+            break
+
+        except ValueError:
+
+            print(
+                "Please enter a valid number."
+            )
+
+    # -----------------------------------------
+    # Save Data
+    # -----------------------------------------
+
+    save_student(
+        student,
+        grade,
         study_hours
     )
 
@@ -271,7 +254,7 @@ def add_student():
 
 def show_menu():
     """
-    Display the main menu.
+    Display the main application menu.
     """
 
     print(
@@ -303,24 +286,137 @@ def show_menu():
     )
 
     print(
-        "5. Exit"
+        "5. Pandas Data Analysis"
+    )
+
+    print(
+        "6. Exit"
     )
 
 
-def display_dataset_summary():
+def display_learning_recommendations():
     """
-    Display overall dataset information.
+    Display personalized learning recommendations
+    based on student performance.
     """
 
-    summary = dataset_summary()
+    students = []
 
-    if not summary:
+    try:
+
+        import csv
+
+        with open(
+            "data/students.csv",
+            "r"
+        ) as file:
+
+            reader = csv.DictReader(file)
+
+            for row in reader:
+
+                students.append(row)
+
+    except FileNotFoundError:
 
         print(
             "\nNo student data available."
         )
 
         return
+
+    if not students:
+
+        print(
+            "\nNo student data available."
+        )
+
+        return
+
+    print(
+        "\nPersonalized Learning Recommendations"
+    )
+
+    print(
+        "-" * 40
+    )
+
+    for student in students:
+
+        name = student["Name"]
+
+        percentage = float(
+            student["Percentage"]
+        )
+
+        print(
+            f"\n{name}:"
+        )
+
+        if percentage >= 90:
+
+            print(
+                "  • Excellent performance. "
+                "Maintain your current study routine."
+            )
+
+        elif percentage >= 70:
+
+            print(
+                "  • Good performance. "
+                "Continue practicing to reach "
+                "the excellent category."
+            )
+
+        elif percentage >= 50:
+
+            print(
+                "  • Average performance. "
+                "Focus on weak subjects and "
+                "increase regular practice."
+            )
+
+        else:
+
+            print(
+                "  • Focus on improving overall "
+                "academic performance."
+            )
+
+
+def view_analytics():
+    """
+    Display advanced academic and learning analytics.
+    """
+
+    print(
+        "\n========== ADVANCED ANALYTICS =========="
+    )
+
+    # -----------------------------------------
+    # Load Student Data
+    # -----------------------------------------
+
+    try:
+
+        import csv
+
+        with open(
+            "data/students.csv",
+            "r"
+        ) as file:
+
+            reader = csv.DictReader(file)
+
+            students = list(reader)
+
+    except FileNotFoundError:
+
+        students = []
+
+    # -----------------------------------------
+    # Dataset Summary
+    # -----------------------------------------
 
     print(
         "\nDataset Summary"
@@ -330,53 +426,85 @@ def display_dataset_summary():
         "-" * 28
     )
 
-    print(
-        f"Total Students          : "
-        f"{summary['total_students']}"
-    )
+    if students:
+
+        percentages = [
+            float(student["Percentage"])
+            for student in students
+        ]
+
+        print(
+            f"Total Students          : "
+            f"{len(students)}"
+        )
+
+        print(
+            f"Average Percentage      : "
+            f"{sum(percentages) / len(percentages):.2f}%"
+        )
+
+        print(
+            f"Highest Percentage      : "
+            f"{max(percentages):.2f}%"
+        )
+
+        print(
+            f"Lowest Percentage       : "
+            f"{min(percentages):.2f}%"
+        )
+
+    else:
+
+        print(
+            "No student data available."
+        )
+
+    # -----------------------------------------
+    # Study Hours Summary
+    # -----------------------------------------
+
+    try:
+
+        with open(
+            "data/study_hours.csv",
+            "r"
+        ) as file:
+
+            reader = csv.DictReader(file)
+
+            study_data = list(reader)
+
+    except FileNotFoundError:
+
+        study_data = []
 
     print(
         f"Students With Study Data: "
-        f"{summary['students_with_study_data']}"
+        f"{len(study_data)}"
     )
 
-    print(
-        f"Average Percentage      : "
-        f"{summary['average_percentage']:.2f}%"
-    )
+    if study_data:
 
-    print(
-        f"Highest Percentage      : "
-        f"{summary['highest_percentage']:.2f}%"
-    )
-
-    print(
-        f"Lowest Percentage       : "
-        f"{summary['lowest_percentage']:.2f}%"
-    )
-
-    if summary["students_with_study_data"] > 0:
+        hours = [
+            float(row["StudyHours"])
+            for row in study_data
+        ]
 
         print(
             f"Average Study Hours     : "
-            f"{summary['average_study_hours']:.2f} "
-            f"hours/day"
+            f"{sum(hours) / len(hours):.2f} hours/day"
         )
 
     else:
 
         print(
             "Average Study Hours     : "
-            "No data available"
+            "No data"
         )
 
-
-def display_basic_analytics():
-    """
-    Display class performance analytics.
-    """
-
-    average = calculate_average()
+    # -----------------------------------------
+    # Class Average
+    # -----------------------------------------
 
     print(
         "\nClass Average"
@@ -386,21 +514,27 @@ def display_basic_analytics():
         "-" * 28
     )
 
+    average = calculate_average()
+
     print(
         f"{average:.2f}%"
     )
 
+    # -----------------------------------------
+    # Top Student
+    # -----------------------------------------
+
     top = top_student()
 
+    print(
+        "\nTop Performing Student"
+    )
+
+    print(
+        "-" * 28
+    )
+
     if top:
-
-        print(
-            "\nTop Performing Student"
-        )
-
-        print(
-            "-" * 28
-        )
 
         print(
             f"Name       : {top['Name']}"
@@ -415,9 +549,24 @@ def display_basic_analytics():
             f"Grade      : {top['Grade']}"
         )
 
-    lowest = lowest_student()
+    else:
 
-    if lowest:
+        print(
+            "No student data available."
+        )
+
+    # -----------------------------------------
+    # Student Needing Attention
+    # -----------------------------------------
+
+    if students:
+
+        lowest = min(
+            students,
+            key=lambda x: float(
+                x["Percentage"]
+            )
+        )
 
         print(
             "\nStudent Needing Most Attention"
@@ -440,13 +589,11 @@ def display_basic_analytics():
             f"Grade      : {lowest['Grade']}"
         )
 
+    # -----------------------------------------
+    # Grade Statistics
+    # -----------------------------------------
 
-def display_grade_statistics():
-    """
-    Display grade distribution.
-    """
-
-    statistics = grade_statistics()
+    grades = grade_statistics()
 
     print(
         "\nGrade Statistics"
@@ -456,27 +603,24 @@ def display_grade_statistics():
         "-" * 28
     )
 
-    if not statistics:
+    if grades:
+
+        for grade, count in grades.items():
+
+            print(
+                f"{grade}: "
+                f"{count} student(s)"
+            )
+
+    else:
 
         print(
             "No grade data available."
         )
 
-        return
-
-    for grade, count in statistics.items():
-
-        print(
-            f"{grade}: {count} student(s)"
-        )
-
-
-def display_performance_categories():
-    """
-    Display performance categories.
-    """
-
-    categories = performance_categories()
+    # -----------------------------------------
+    # Performance Categories
+    # -----------------------------------------
 
     print(
         "\nPerformance Categories"
@@ -486,6 +630,35 @@ def display_performance_categories():
         "-" * 28
     )
 
+    categories = {
+        "Excellent": 0,
+        "Good": 0,
+        "Average": 0,
+        "Needs Attention": 0
+    }
+
+    for student in students:
+
+        percentage = float(
+            student["Percentage"]
+        )
+
+        if percentage >= 90:
+
+            categories["Excellent"] += 1
+
+        elif percentage >= 70:
+
+            categories["Good"] += 1
+
+        elif percentage >= 50:
+
+            categories["Average"] += 1
+
+        else:
+
+            categories["Needs Attention"] += 1
+
     for category, count in categories.items():
 
         print(
@@ -493,13 +666,42 @@ def display_performance_categories():
             f"{count} student(s)"
         )
 
+    # -----------------------------------------
+    # Subject Performance
+    # -----------------------------------------
 
-def display_subject_statistics():
-    """
-    Display subject-wise performance.
-    """
+    try:
 
-    statistics = subject_statistics()
+        with open(
+            "data/subject_marks.csv",
+            "r"
+        ) as file:
+
+            reader = csv.DictReader(file)
+
+            subject_data = list(reader)
+
+    except FileNotFoundError:
+
+        subject_data = []
+
+    subject_averages = {}
+
+    for row in subject_data:
+
+        subject = row["Subject"]
+
+        marks = float(
+            row["Marks"]
+        )
+
+        if subject not in subject_averages:
+
+            subject_averages[subject] = []
+
+        subject_averages[subject].append(
+            marks
+        )
 
     print(
         "\nSubject Performance"
@@ -509,52 +711,58 @@ def display_subject_statistics():
         "-" * 28
     )
 
-    if not statistics:
-
-        print(
-            "No subject data available."
-        )
-
-        return
-
-    for subject, average in sorted(
-        statistics.items()
+    for subject in sorted(
+        subject_averages
     ):
+
+        average_marks = (
+            sum(
+                subject_averages[subject]
+            )
+            /
+            len(
+                subject_averages[subject]
+            )
+        )
 
         print(
             f"{subject:<15}"
-            f"Average: {average:.2f}%"
+            f"Average: "
+            f"{average_marks:.2f}%"
         )
 
-    strongest = strongest_subject()
+    if subject_averages:
 
-    weakest = weakest_subject()
+        subject_average_values = {
+            subject:
+            sum(marks) / len(marks)
+            for subject, marks
+            in subject_averages.items()
+        }
 
-    if strongest:
+        strongest = max(
+            subject_average_values,
+            key=subject_average_values.get
+        )
+
+        weakest = min(
+            subject_average_values,
+            key=subject_average_values.get
+        )
 
         print(
             f"\nStrongest Subject : "
             f"{strongest}"
         )
 
-    if weakest:
-
         print(
             f"Weakest Subject   : "
             f"{weakest}"
         )
 
-
-def display_learning_habits():
-    """
-    Display study-hour analytics.
-    """
-
-    average_hours = average_study_hours()
-
-    highest = highest_study_hours()
-
-    lowest = lowest_study_hours()
+    # -----------------------------------------
+    # Learning Habits
+    # -----------------------------------------
 
     print(
         "\nLearning Habits"
@@ -564,153 +772,587 @@ def display_learning_habits():
         "-" * 28
     )
 
-    if not highest:
+    if study_data:
+
+        study_hours = {
+            row["Name"]:
+            float(row["StudyHours"])
+            for row in study_data
+        }
+
+        average_hours = (
+            sum(study_hours.values())
+            /
+            len(study_hours)
+        )
+
+        highest_name = max(
+            study_hours,
+            key=study_hours.get
+        )
+
+        lowest_name = min(
+            study_hours,
+            key=study_hours.get
+        )
+
+        print(
+            f"Average Study Hours : "
+            f"{average_hours:.2f} hours/day"
+        )
+
+        print(
+            f"Highest Study Time  : "
+            f"{highest_name} "
+            f"({study_hours[highest_name]:.2f} "
+            f"hours/day)"
+        )
+
+        print(
+            f"Lowest Study Time   : "
+            f"{lowest_name} "
+            f"({study_hours[lowest_name]:.2f} "
+            f"hours/day)"
+        )
+
+        # -------------------------------------
+        # Study vs Performance
+        # -------------------------------------
+
+        print(
+            "\nStudy Hours vs Performance"
+        )
+
+        print(
+            "-" * 28
+        )
+
+        student_percentages = {
+            student["Name"]:
+            float(student["Percentage"])
+            for student in students
+        }
+
+        matching_data = []
+
+        for name, hours_value in study_hours.items():
+
+            if name in student_percentages:
+
+                matching_data.append(
+                    (
+                        name,
+                        hours_value,
+                        student_percentages[name]
+                    )
+                )
+
+                print(
+                    f"{name:<12}"
+                    f"Study: "
+                    f"{hours_value:.2f} hrs/day   "
+                    f"Score: "
+                    f"{student_percentages[name]:.2f}%"
+                )
+
+        # -------------------------------------
+        # Learning Insight
+        # -------------------------------------
+
+        print(
+            "\nLearning Insight"
+        )
+
+        print(
+            "-" * 28
+        )
+
+        if len(matching_data) >= 2:
+
+            above_average = [
+                score
+                for name, hours_value, score
+                in matching_data
+                if hours_value >= average_hours
+            ]
+
+            below_average = [
+                score
+                for name, hours_value, score
+                in matching_data
+                if hours_value < average_hours
+            ]
+
+            if (
+                above_average
+                and below_average
+            ):
+
+                above_score = (
+                    sum(above_average)
+                    /
+                    len(above_average)
+                )
+
+                below_score = (
+                    sum(below_average)
+                    /
+                    len(below_average)
+                )
+
+                difference = (
+                    above_score
+                    -
+                    below_score
+                )
+
+                if difference > 0:
+
+                    print(
+                        "Students studying at or "
+                        "above the average study "
+                        "time scored about "
+                        f"{difference:.2f} "
+                        "percentage points higher "
+                        "on average."
+                    )
+
+                    print(
+                        "This shows an association "
+                        "in the current sample, "
+                        "not causation."
+                    )
+
+                else:
+
+                    print(
+                        "Students studying at or "
+                        "above the average study "
+                        "time did not score higher "
+                        "on average in the current "
+                        "sample."
+                    )
+
+            else:
+
+                print(
+                    "More student data is needed "
+                    "to compare learning patterns."
+                )
+
+        else:
+
+            print(
+                "More student data is needed "
+                "to compare learning patterns."
+            )
+
+    else:
 
         print(
             "No study-hour data available."
         )
 
+    # -----------------------------------------
+    # Personalized Recommendations
+    # -----------------------------------------
+
+    display_learning_recommendations()
+
+    print(
+        "\n=========================================="
+    )
+
+
+def view_pandas_analysis():
+    """
+    Display Pandas-based data analysis.
+    """
+
+    print(
+        "\n========== PANDAS DATA ANALYSIS =========="
+    )
+
+    # -----------------------------------------
+    # Statistical Summary
+    # -----------------------------------------
+
+    statistics = pandas_class_statistics()
+
+    print(
+        "\nStatistical Summary"
+    )
+
+    print(
+        "-" * 35
+    )
+
+    if not statistics:
+
+        print(
+            "No student data available."
+        )
+
         return
 
     print(
-        f"Average Study Hours : "
-        f"{average_hours:.2f} hours/day"
+        f"Total Students : "
+        f"{statistics['total_students']}"
     )
 
     print(
-        f"Highest Study Time  : "
-        f"{highest['Name']} "
-        f"({float(highest['StudyHours']):.2f} "
-        f"hours/day)"
+        f"Mean           : "
+        f"{float(statistics['average_percentage']):.2f}%"
     )
 
     print(
-        f"Lowest Study Time   : "
-        f"{lowest['Name']} "
-        f"({float(lowest['StudyHours']):.2f} "
-        f"hours/day)"
+        f"Median         : "
+        f"{float(statistics['median_percentage']):.2f}%"
     )
 
+    print(
+        f"Highest        : "
+        f"{float(statistics['highest_percentage']):.2f}%"
+    )
 
-def display_study_performance():
-    """
-    Display study hours versus academic performance.
-    """
+    print(
+        f"Lowest         : "
+        f"{float(statistics['lowest_percentage']):.2f}%"
+    )
 
-    data = study_performance_analysis()
+    # -----------------------------------------
+    # Student Ranking
+    # -----------------------------------------
+
+    ranking = pandas_student_ranking()
+
+    print(
+        "\nStudent Ranking"
+    )
+
+    print(
+        "-" * 55
+    )
+
+    if not ranking.empty:
+
+        print(
+            f"{'Rank':<8}"
+            f"{'Name':<15}"
+            f"{'Percentage':<15}"
+            f"{'Grade':<8}"
+        )
+
+        print(
+            "-" * 55
+        )
+
+        for _, row in ranking.iterrows():
+
+            print(
+                f"{int(row['Rank']):<8}"
+                f"{str(row['Name']):<15}"
+                f"{float(row['Percentage']):<15.2f}"
+                f"{str(row['Grade']):<8}"
+            )
+
+    # -----------------------------------------
+    # Grade Distribution
+    # -----------------------------------------
+
+    grades = pandas_grade_distribution()
+
+    print(
+        "\nGrade Distribution"
+    )
+
+    print(
+        "-" * 35
+    )
+
+    if grades:
+
+        for grade, count in grades.items():
+
+            print(
+                f"{grade}: "
+                f"{count} student(s)"
+            )
+
+    else:
+
+        print(
+            "No grade data available."
+        )
+
+    # -----------------------------------------
+    # Performance Categories
+    # -----------------------------------------
+
+    categories = (
+        pandas_performance_categories()
+    )
+
+    print(
+        "\nPerformance Categories"
+    )
+
+    print(
+        "-" * 35
+    )
+
+    if categories:
+
+        for category, count in categories.items():
+
+            print(
+                f"{category}: "
+                f"{count} student(s)"
+            )
+
+    # -----------------------------------------
+    # Subject Statistics
+    # -----------------------------------------
+
+    subjects = pandas_subject_statistics()
+
+    print(
+        "\nSubject Statistics"
+    )
+
+    print(
+        "-" * 70
+    )
+
+    if not subjects.empty:
+
+        print(
+            f"{'Subject':<15}"
+            f"{'Average':<15}"
+            f"{'Highest':<15}"
+            f"{'Lowest':<15}"
+            f"{'Students':<10}"
+        )
+
+        print(
+            "-" * 70
+        )
+
+        for _, row in subjects.iterrows():
+
+            print(
+                f"{str(row['Subject']):<15}"
+                f"{float(row['Average']):<15.2f}"
+                f"{float(row['Highest']):<15.2f}"
+                f"{float(row['Lowest']):<15.2f}"
+                f"{int(row['Students']):<10}"
+            )
+
+    else:
+
+        print(
+            "No subject data available."
+        )
+
+    # -----------------------------------------
+    # Top Performing Student
+    # -----------------------------------------
+
+    top = pandas_top_student()
+
+    print(
+        "\nTop Performing Student"
+    )
+
+    print(
+        "-" * 35
+    )
+
+    if top:
+
+        print(
+            f"Name       : {top['Name']}"
+        )
+
+        print(
+            f"Percentage : "
+            f"{float(top['Percentage']):.2f}%"
+        )
+
+        print(
+            f"Grade      : {top['Grade']}"
+        )
+
+    # -----------------------------------------
+    # Lowest Performing Student
+    # -----------------------------------------
+
+    lowest = pandas_lowest_student()
+
+    print(
+        "\nStudent Needing Most Attention"
+    )
+
+    print(
+        "-" * 35
+    )
+
+    if lowest:
+
+        print(
+            f"Name       : {lowest['Name']}"
+        )
+
+        print(
+            f"Percentage : "
+            f"{float(lowest['Percentage']):.2f}%"
+        )
+
+        print(
+            f"Grade      : {lowest['Grade']}"
+        )
+
+    # -----------------------------------------
+    # Study Statistics
+    # -----------------------------------------
+
+    study = pandas_study_statistics()
+
+    print(
+        "\nStudy Habits Statistics"
+    )
+
+    print(
+        "-" * 35
+    )
+
+    if study:
+
+        print(
+            f"Average Study Hours : "
+            f"{float(study['average_hours']):.2f} "
+            f"hours/day"
+        )
+
+        print(
+            f"Median Study Hours  : "
+            f"{float(study['median_hours']):.2f} "
+            f"hours/day"
+        )
+
+        print(
+            f"Highest Study Hours : "
+            f"{float(study['highest_hours']):.2f} "
+            f"hours/day"
+        )
+
+        print(
+            f"Lowest Study Hours  : "
+            f"{float(study['lowest_hours']):.2f} "
+            f"hours/day"
+        )
+
+    else:
+
+        print(
+            "No study-hour data available."
+        )
+
+    # -----------------------------------------
+    # Study Hours vs Performance
+    # -----------------------------------------
+
+    study_performance = (
+        pandas_study_performance()
+    )
 
     print(
         "\nStudy Hours vs Performance"
     )
 
     print(
-        "-" * 28
+        "-" * 45
     )
 
-    if not data:
+    if not study_performance.empty:
+
+        for _, row in (
+            study_performance.iterrows()
+        ):
+
+            print(
+                f"{str(row['Name']):<12}"
+                f"Study: "
+                f"{float(row['StudyHours']):.2f} "
+                f"hrs/day   "
+                f"Score: "
+                f"{float(row['Percentage']):.2f}%"
+            )
+
+    else:
 
         print(
             "No matching study and "
             "performance data available."
         )
 
-        return
+    # -----------------------------------------
+    # Correlation
+    # -----------------------------------------
 
-    for student in data:
+    correlation = pandas_correlation()
+
+    print(
+        "\nStudy Hours / Performance Correlation"
+    )
+
+    print(
+        "-" * 45
+    )
+
+    if correlation is not None:
 
         print(
-            f"{student['Name']:<12}"
-            f"Study: "
-            f"{student['StudyHours']:.2f} hrs/day   "
-            f"Score: "
-            f"{student['Percentage']:.2f}%"
+            f"Correlation : "
+            f"{float(correlation):.3f}"
         )
 
-
-def display_learning_insight():
-    """
-    Display learning pattern insight.
-    """
-
-    insight = learning_insight()
-
-    print(
-        "\nLearning Insight"
-    )
-
-    print(
-        "-" * 28
-    )
-
-    print(
-        insight
-    )
-
-
-def display_recommendations():
-    """
-    Display personalized recommendations.
-    """
-
-    recommendations = (
-        generate_recommendations()
-    )
-
-    print(
-        "\nPersonalized Learning Recommendations"
-    )
-
-    print(
-        "-" * 40
-    )
-
-    if not recommendations:
-
-        print(
-            "No recommendation data available."
-        )
-
-        return
-
-    for name, items in recommendations.items():
-
-        print(
-            f"\n{name}:"
-        )
-
-        for recommendation in items:
+        if correlation > 0.7:
 
             print(
-                f"  • {recommendation}"
+                "Strong positive association."
             )
 
+        elif correlation > 0.3:
 
-def view_analytics():
-    """
-    Display complete advanced analytics.
-    """
+            print(
+                "Moderate positive association."
+            )
 
-    print(
-        "\n========== ADVANCED ANALYTICS =========="
-    )
+        elif correlation > 0:
 
-    display_dataset_summary()
+            print(
+                "Weak positive association."
+            )
 
-    display_basic_analytics()
+        elif correlation < -0.3:
 
-    display_grade_statistics()
+            print(
+                "Negative association."
+            )
 
-    display_performance_categories()
+        else:
 
-    display_subject_statistics()
+            print(
+                "Weak or no clear association."
+            )
 
-    display_learning_habits()
+    else:
 
-    display_study_performance()
-
-    display_learning_insight()
-
-    display_recommendations()
+        print(
+            "Not enough matching data "
+            "to calculate correlation."
+        )
 
     print(
         "\n=========================================="
@@ -730,13 +1372,25 @@ def main():
             "\nEnter your choice: "
         ).strip()
 
+        # -------------------------------------
+        # Add / Update Student
+        # -------------------------------------
+
         if choice == "1":
 
             add_student()
 
+        # -------------------------------------
+        # View Students
+        # -------------------------------------
+
         elif choice == "2":
 
             view_students()
+
+        # -------------------------------------
+        # Search Student
+        # -------------------------------------
 
         elif choice == "3":
 
@@ -744,21 +1398,29 @@ def main():
                 "Enter student name to search: "
             ).strip()
 
-            if name:
+            search_student(name)
 
-                search_student(name)
-
-            else:
-
-                print(
-                    "\nStudent name cannot be empty."
-                )
+        # -------------------------------------
+        # Existing Analytics
+        # -------------------------------------
 
         elif choice == "4":
 
             view_analytics()
 
+        # -------------------------------------
+        # Pandas Analytics
+        # -------------------------------------
+
         elif choice == "5":
+
+            view_pandas_analysis()
+
+        # -------------------------------------
+        # Exit
+        # -------------------------------------
+
+        elif choice == "6":
 
             print(
                 "\nThank you for using "
@@ -771,10 +1433,9 @@ def main():
 
             print(
                 "\nInvalid choice. "
-                "Please select 1-5."
+                "Please select 1-6."
             )
 
 
 if __name__ == "__main__":
-
     main()
