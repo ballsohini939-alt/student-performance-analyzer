@@ -2,9 +2,11 @@ import csv
 import os
 
 FILE_NAME = "data/students.csv"
+SUBJECT_FILE_NAME = "data/subject_marks.csv"
 
 
 def save_student(student, grade):
+    # Save student summary
     file_exists = os.path.isfile(FILE_NAME)
 
     with open(FILE_NAME, "a", newline="") as file:
@@ -19,6 +21,22 @@ def save_student(student, grade):
             f"{student.percentage():.2f}",
             grade
         ])
+
+    # Save subject-wise marks
+    subject_file_exists = os.path.isfile(SUBJECT_FILE_NAME)
+
+    with open(SUBJECT_FILE_NAME, "a", newline="") as file:
+        writer = csv.writer(file)
+
+        if not subject_file_exists or os.path.getsize(SUBJECT_FILE_NAME) == 0:
+            writer.writerow(["Name", "Subject", "Marks"])
+
+        for subject, marks in student.subjects.items():
+            writer.writerow([
+                student.name,
+                subject,
+                f"{marks:.2f}"
+            ])
 
 
 def view_students():
@@ -55,6 +73,7 @@ def search_student(name):
                 print(f"Total      : {row['Total']}")
                 print(f"Percentage : {row['Percentage']}")
                 print(f"Grade      : {row['Grade']}")
+
                 found = True
                 break
 
