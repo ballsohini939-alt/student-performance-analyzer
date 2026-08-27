@@ -3,6 +3,7 @@ import os
 
 FILE_NAME = "data/students.csv"
 SUBJECT_FILE_NAME = "data/subject_marks.csv"
+STUDY_HOURS_FILE = "data/study_hours.csv"
 
 
 def save_student(student, grade):
@@ -13,7 +14,12 @@ def save_student(student, grade):
         writer = csv.writer(file)
 
         if not file_exists or os.path.getsize(FILE_NAME) == 0:
-            writer.writerow(["Name", "Total", "Percentage", "Grade"])
+            writer.writerow([
+                "Name",
+                "Total",
+                "Percentage",
+                "Grade"
+            ])
 
         writer.writerow([
             student.name,
@@ -28,8 +34,15 @@ def save_student(student, grade):
     with open(SUBJECT_FILE_NAME, "a", newline="") as file:
         writer = csv.writer(file)
 
-        if not subject_file_exists or os.path.getsize(SUBJECT_FILE_NAME) == 0:
-            writer.writerow(["Name", "Subject", "Marks"])
+        if (
+            not subject_file_exists
+            or os.path.getsize(SUBJECT_FILE_NAME) == 0
+        ):
+            writer.writerow([
+                "Name",
+                "Subject",
+                "Marks"
+            ])
 
         for subject, marks in student.subjects.items():
             writer.writerow([
@@ -37,6 +50,28 @@ def save_student(student, grade):
                 subject,
                 f"{marks:.2f}"
             ])
+
+
+def save_study_hours(name, study_hours):
+    # Save student's study hours
+    file_exists = os.path.isfile(STUDY_HOURS_FILE)
+
+    with open(STUDY_HOURS_FILE, "a", newline="") as file:
+        writer = csv.writer(file)
+
+        if (
+            not file_exists
+            or os.path.getsize(STUDY_HOURS_FILE) == 0
+        ):
+            writer.writerow([
+                "Name",
+                "StudyHours"
+            ])
+
+        writer.writerow([
+            name,
+            f"{study_hours:.2f}"
+        ])
 
 
 def view_students():
@@ -66,7 +101,9 @@ def search_student(name):
         reader = csv.DictReader(file)
 
         for row in reader:
+
             if row["Name"].lower() == name.lower():
+
                 print("\nStudent Found")
                 print("---------------------------")
                 print(f"Name       : {row['Name']}")
