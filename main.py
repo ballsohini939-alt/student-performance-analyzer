@@ -36,6 +36,10 @@ from visualizations import (
 
 from student_profile import get_student_profile
 
+from performance_comparison import compare_students
+
+from class_dashboard import display_class_dashboard
+
 
 def add_student():
     """
@@ -87,7 +91,6 @@ def add_student():
     for i in range(number):
 
         while True:
-
             subject = input(
                 f"\nEnter subject {i + 1} name: "
             ).strip()
@@ -99,9 +102,7 @@ def add_student():
             break
 
         while True:
-
             try:
-
                 marks = float(
                     input(
                         f"Enter marks for {subject}: "
@@ -123,7 +124,6 @@ def add_student():
                 )
 
             except ValueError:
-
                 print("Please enter a valid number.")
 
     # -----------------------------------------
@@ -192,7 +192,6 @@ def add_student():
     )
 
     while True:
-
         try:
 
             study_hours = float(
@@ -212,7 +211,6 @@ def add_student():
             break
 
         except ValueError:
-
             print("Please enter a valid number.")
 
     # -----------------------------------------
@@ -252,10 +250,12 @@ def show_menu():
     print("2. View All Students")
     print("3. Search Student")
     print("4. Student Profile")
-    print("5. View Analytics")
-    print("6. Pandas Data Analysis")
-    print("7. Data Visualizations")
-    print("8. Exit")
+    print("5. Student Comparison")
+    print("6. Class Performance Dashboard")
+    print("7. View Analytics")
+    print("8. Pandas Data Analysis")
+    print("9. Data Visualizations")
+    print("10. Exit")
 
 
 def display_learning_recommendations():
@@ -272,13 +272,13 @@ def display_learning_recommendations():
 
         with open(
             "data/students.csv",
-            "r"
+            "r",
+            encoding="utf-8"
         ) as file:
 
             reader = csv.DictReader(file)
 
             for row in reader:
-
                 students.append(row)
 
     except FileNotFoundError:
@@ -319,7 +319,8 @@ def display_learning_recommendations():
 
             print(
                 "  • Excellent performance. "
-                "Maintain your current study routine."
+                "Maintain your current study routine "
+                "and continue challenging yourself."
             )
 
         elif percentage >= 70:
@@ -365,7 +366,8 @@ def view_analytics():
 
         with open(
             "data/students.csv",
-            "r"
+            "r",
+            encoding="utf-8"
         ) as file:
 
             reader = csv.DictReader(file)
@@ -425,7 +427,8 @@ def view_analytics():
 
         with open(
             "data/study_hours.csv",
-            "r"
+            "r",
+            encoding="utf-8"
         ) as file:
 
             reader = csv.DictReader(file)
@@ -614,7 +617,8 @@ def view_analytics():
 
         with open(
             "data/subject_marks.csv",
-            "r"
+            "r",
+            encoding="utf-8"
         ) as file:
 
             reader = csv.DictReader(file)
@@ -670,13 +674,10 @@ def view_analytics():
     if subject_averages:
 
         subject_average_values = {
-
             subject:
             sum(marks) / len(marks)
-
             for subject, marks
             in subject_averages.items()
-
         }
 
         strongest = max(
@@ -710,12 +711,9 @@ def view_analytics():
     if study_data:
 
         study_hours = {
-
             row["Name"]:
             float(row["StudyHours"])
-
             for row in study_data
-
         }
 
         average_hours = (
@@ -764,12 +762,9 @@ def view_analytics():
         print("-" * 28)
 
         student_percentages = {
-
             student["Name"]:
             float(student["Percentage"])
-
             for student in students
-
         }
 
         matching_data = []
@@ -805,25 +800,17 @@ def view_analytics():
         if len(matching_data) >= 2:
 
             above_average = [
-
                 score
-
                 for name, hours_value, score
                 in matching_data
-
                 if hours_value >= average_hours
-
             ]
 
             below_average = [
-
                 score
-
                 for name, hours_value, score
                 in matching_data
-
                 if hours_value < average_hours
-
             ]
 
             if above_average and below_average:
@@ -1417,13 +1404,37 @@ def main():
                 "Enter student name: "
             ).strip()
 
-            get_student_profile(name)
+            if name:
+
+                get_student_profile(name)
+
+            else:
+
+                print(
+                    "\nStudent name cannot be empty."
+                )
+
+        # -------------------------------------
+        # Student Comparison
+        # -------------------------------------
+
+        elif choice == "5":
+
+            compare_students()
+
+        # -------------------------------------
+        # Class Performance Dashboard
+        # -------------------------------------
+
+        elif choice == "6":
+
+            display_class_dashboard()
 
         # -------------------------------------
         # Existing Analytics
         # -------------------------------------
 
-        elif choice == "5":
+        elif choice == "7":
 
             view_analytics()
 
@@ -1431,7 +1442,7 @@ def main():
         # Pandas Analytics
         # -------------------------------------
 
-        elif choice == "6":
+        elif choice == "8":
 
             view_pandas_analysis()
 
@@ -1439,7 +1450,7 @@ def main():
         # Data Visualizations
         # -------------------------------------
 
-        elif choice == "7":
+        elif choice == "9":
 
             visualization_menu()
 
@@ -1447,7 +1458,7 @@ def main():
         # Exit
         # -------------------------------------
 
-        elif choice == "8":
+        elif choice == "10":
 
             print(
                 "\nThank you for using "
@@ -1464,7 +1475,7 @@ def main():
 
             print(
                 "\nInvalid choice. "
-                "Please select 1-8."
+                "Please select 1-10."
             )
 
 
