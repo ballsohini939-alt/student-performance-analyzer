@@ -36,11 +36,8 @@ from visualizations import (
 )
 
 from student_profile import get_student_profile
-
 from performance_comparison import compare_students
-
 from class_dashboard import display_class_dashboard
-
 from performance_trend import performance_trend_menu
 
 
@@ -51,7 +48,6 @@ from performance_trend import performance_trend_menu
 def add_student():
     """
     Add a new student or update an existing student.
-
     Stores academic performance, subject marks,
     and study hours.
     """
@@ -63,17 +59,12 @@ def add_student():
     # --------------------------------------------------------
 
     while True:
-
-        name = input(
-            "Enter student name: "
-        ).strip()
+        name = input("Enter student name: ").strip()
 
         if name:
             break
 
-        print(
-            "Student name cannot be empty."
-        )
+        print("Student name cannot be empty.")
 
     student = Student(name)
 
@@ -82,27 +73,18 @@ def add_student():
     # --------------------------------------------------------
 
     while True:
-
         try:
-
             number = int(
-                input(
-                    "Enter number of subjects: "
-                )
+                input("Enter number of subjects: ")
             )
 
             if number > 0:
                 break
 
-            print(
-                "Please enter at least one subject."
-            )
+            print("Please enter at least one subject.")
 
         except ValueError:
-
-            print(
-                "Please enter a valid number."
-            )
+            print("Please enter a valid number.")
 
     # --------------------------------------------------------
     # Subject-wise Marks
@@ -113,57 +95,39 @@ def add_student():
     for i in range(number):
 
         while True:
-
             subject = input(
                 f"\nEnter subject {i + 1} name: "
             ).strip()
 
             if not subject:
-
-                print(
-                    "Subject name cannot be empty."
-                )
-
+                print("Subject name cannot be empty.")
                 continue
 
             break
 
         while True:
-
             try:
-
                 marks = float(
-                    input(
-                        f"Enter marks for {subject}: "
-                    )
+                    input(f"Enter marks for {subject}: ")
                 )
 
                 if 0 <= marks <= 100:
-
                     student.add_subject(
                         subject,
                         marks
                     )
-
                     break
 
-                print(
-                    "Marks must be between "
-                    "0 and 100."
-                )
+                print("Marks must be between 0 and 100.")
 
             except ValueError:
-
-                print(
-                    "Please enter a valid number."
-                )
+                print("Please enter a valid number.")
 
     # --------------------------------------------------------
     # Performance Calculation
     # --------------------------------------------------------
 
     total = student.total_marks()
-
     percentage = student.percentage()
 
     grade = calculate_grade(
@@ -195,21 +159,17 @@ def add_student():
     )
 
     print(
-        f"Highest      : "
-        f"{student.highest_subject()}"
+        f"Highest      : {student.highest_subject()}"
     )
 
     print(
-        f"Lowest       : "
-        f"{student.lowest_subject()}"
+        f"Lowest       : {student.lowest_subject()}"
     )
 
     print("\nSubject-wise Marks")
-
     print("-" * 30)
 
     for subject, marks in student.subjects.items():
-
         print(
             f"{subject:<15}"
             f"{marks:.2f}"
@@ -224,9 +184,7 @@ def add_student():
     )
 
     while True:
-
         try:
-
             study_hours = float(
                 input(
                     "Enter average study hours per day: "
@@ -234,17 +192,14 @@ def add_student():
             )
 
             if study_hours < 0:
-
                 print(
                     "Study hours cannot be negative."
                 )
-
                 continue
 
             break
 
         except ValueError:
-
             print(
                 "Please enter a valid number."
             )
@@ -264,8 +219,7 @@ def add_student():
     )
 
     print(
-        "Academic data and study habits "
-        "are synchronized."
+        "Academic data and study habits are synchronized."
     )
 
 
@@ -287,25 +241,15 @@ def show_menu():
     print("=" * 40)
 
     print("1. Add Student")
-
     print("2. View All Students")
-
     print("3. Search Student")
-
     print("4. Student Profile")
-
     print("5. Student Comparison")
-
     print("6. Class Performance Dashboard")
-
     print("7. Performance Trend")
-
     print("8. View Analytics")
-
     print("9. Pandas Data Analysis")
-
     print("10. Data Visualizations")
-
     print("11. Exit")
 
 
@@ -322,7 +266,6 @@ def display_learning_recommendations():
     students = []
 
     try:
-
         import csv
 
         with open(
@@ -333,23 +276,14 @@ def display_learning_recommendations():
             reader = csv.DictReader(file)
 
             for row in reader:
-
                 students.append(row)
 
     except FileNotFoundError:
-
-        print(
-            "\nNo student data available."
-        )
-
+        print("\nNo student data available.")
         return
 
     if not students:
-
-        print(
-            "\nNo student data available."
-        )
-
+        print("\nNo student data available.")
         return
 
     print(
@@ -420,7 +354,6 @@ def view_analytics():
     # --------------------------------------------------------
 
     try:
-
         import csv
 
         with open(
@@ -429,11 +362,9 @@ def view_analytics():
         ) as file:
 
             reader = csv.DictReader(file)
-
             students = list(reader)
 
     except FileNotFoundError:
-
         students = []
 
     # --------------------------------------------------------
@@ -441,7 +372,6 @@ def view_analytics():
     # --------------------------------------------------------
 
     print("\nDataset Summary")
-
     print("-" * 28)
 
     if students:
@@ -489,11 +419,9 @@ def view_analytics():
         ) as file:
 
             reader = csv.DictReader(file)
-
             study_data = list(reader)
 
     except FileNotFoundError:
-
         study_data = []
 
     print(
@@ -525,7 +453,6 @@ def view_analytics():
     # --------------------------------------------------------
 
     print("\nClass Average")
-
     print("-" * 28)
 
     average = calculate_average()
@@ -541,7 +468,6 @@ def view_analytics():
     top = top_student()
 
     print("\nTop Performing Student")
-
     print("-" * 28)
 
     if top:
@@ -604,7 +530,6 @@ def view_analytics():
     grades = grade_statistics()
 
     print("\nGrade Statistics")
-
     print("-" * 28)
 
     if grades:
@@ -627,7 +552,6 @@ def view_analytics():
     # --------------------------------------------------------
 
     print("\nPerformance Categories")
-
     print("-" * 28)
 
     categories = {
@@ -678,7 +602,6 @@ def view_analytics():
         ) as file:
 
             reader = csv.DictReader(file)
-
             subject_data = list(reader)
 
     except FileNotFoundError:
@@ -696,7 +619,6 @@ def view_analytics():
         )
 
         if subject not in subject_averages:
-
             subject_averages[subject] = []
 
         subject_averages[subject].append(
@@ -704,12 +626,9 @@ def view_analytics():
         )
 
     print("\nSubject Performance")
-
     print("-" * 28)
 
-    for subject in sorted(
-        subject_averages
-    ):
+    for subject in sorted(subject_averages):
 
         average_marks = (
             sum(
@@ -761,7 +680,6 @@ def view_analytics():
     # --------------------------------------------------------
 
     print("\nLearning Habits")
-
     print("-" * 28)
 
     if study_data:
@@ -850,7 +768,6 @@ def view_analytics():
         # ----------------------------------------------------
 
         print("\nLearning Insight")
-
         print("-" * 28)
 
         if len(matching_data) >= 2:
@@ -967,7 +884,6 @@ def view_pandas_analysis():
     statistics = pandas_class_statistics()
 
     print("\nStatistical Summary")
-
     print("-" * 35)
 
     if not statistics:
@@ -1010,7 +926,6 @@ def view_pandas_analysis():
     ranking = pandas_student_ranking()
 
     print("\nStudent Ranking")
-
     print("-" * 55)
 
     if not ranking.empty:
@@ -1040,7 +955,6 @@ def view_pandas_analysis():
     grades = pandas_grade_distribution()
 
     print("\nGrade Distribution")
-
     print("-" * 35)
 
     if grades:
@@ -1065,7 +979,6 @@ def view_pandas_analysis():
     categories = pandas_performance_categories()
 
     print("\nPerformance Categories")
-
     print("-" * 35)
 
     if categories:
@@ -1084,7 +997,6 @@ def view_pandas_analysis():
     subjects = pandas_subject_statistics()
 
     print("\nSubject Statistics")
-
     print("-" * 70)
 
     if not subjects.empty:
@@ -1122,7 +1034,6 @@ def view_pandas_analysis():
     top = pandas_top_student()
 
     print("\nTop Performing Student")
-
     print("-" * 35)
 
     if top:
@@ -1174,7 +1085,6 @@ def view_pandas_analysis():
     study = pandas_study_statistics()
 
     print("\nStudy Habits Statistics")
-
     print("-" * 35)
 
     if study:
@@ -1322,17 +1232,11 @@ def visualization_menu():
         )
 
         print("1. Student Performance")
-
         print("2. Subject Performance")
-
         print("3. Grade Distribution")
-
         print("4. Performance Categories")
-
         print("5. Study Hours vs Performance")
-
         print("6. Generate All Charts")
-
         print("7. Back to Main Menu")
 
         choice = input(
@@ -1390,13 +1294,9 @@ def visualization_menu():
             )
 
             show_student_performance_chart()
-
             show_subject_performance_chart()
-
             show_grade_distribution_chart()
-
             show_performance_categories_chart()
-
             show_study_hours_vs_performance()
 
             print(
