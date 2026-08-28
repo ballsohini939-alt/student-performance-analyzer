@@ -161,7 +161,7 @@ Below are screenshots of the interactive Streamlit dashboard.
 
 ---
 
-## 👤 Student Performance
+## 👤 Subjectwise Performance
 
 ![Student Profile](screenshots/02_student_profile.png)
 
@@ -179,7 +179,7 @@ Below are screenshots of the interactive Streamlit dashboard.
 
 ---
 
-## 📚 Subject Performance
+## 📚 Student's Performance
 
 ![Subject Performance](screenshots/07_subject_performance.png)
 
