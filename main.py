@@ -1,3 +1,4 @@
+
 from student import Student
 from analyzer import calculate_grade
 
@@ -38,7 +39,12 @@ from student_profile import get_student_profile
 from performance_comparison import compare_students
 from class_dashboard import display_class_dashboard
 from performance_trend import performance_trend_menu
+
+# Text report generator
 from report_generator import generate_student_report
+
+# PDF report generator
+from pdf_report_generator import generate_student_pdf_report
 
 
 # ============================================================
@@ -1410,7 +1416,7 @@ def visualization_menu():
 
 def generate_report():
     """
-    Generate a text report for a selected student.
+    Generate both text and PDF reports for a selected student.
     """
 
     print(
@@ -1429,18 +1435,66 @@ def generate_report():
 
         return
 
-    report_path = generate_student_report(
+    # --------------------------------------------------------
+    # Generate Text Report
+    # --------------------------------------------------------
+
+    text_report_path = generate_student_report(
         name
     )
 
-    if report_path:
+    # --------------------------------------------------------
+    # Generate PDF Report
+    # --------------------------------------------------------
+
+    pdf_report_path = generate_student_pdf_report(
+        name
+    )
+
+    # --------------------------------------------------------
+    # Display Results
+    # --------------------------------------------------------
+
+    if text_report_path and pdf_report_path:
 
         print(
-            "\nStudent report generated successfully!"
+            "\nStudent reports generated successfully!"
         )
 
         print(
-            f"Report saved at: {report_path}"
+            f"Text Report : {text_report_path}"
+        )
+
+        print(
+            f"PDF Report  : {pdf_report_path}"
+        )
+
+    elif text_report_path:
+
+        print(
+            "\nText report generated successfully."
+        )
+
+        print(
+            f"Text Report : {text_report_path}"
+        )
+
+        print(
+            "PDF report could not be generated."
+        )
+
+    elif pdf_report_path:
+
+        print(
+            "\nPDF report generated successfully."
+        )
+
+        print(
+            f"PDF Report  : {pdf_report_path}"
+        )
+
+        print(
+            "Text report could not be generated."
         )
 
     else:
@@ -1611,3 +1665,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
