@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-
 # ============================================================
 # PAGE CONFIGURATION
 # ============================================================
@@ -11,10 +10,8 @@ from pathlib import Path
 st.set_page_config(
     page_title="Student Performance Analyzer",
     page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
-
 
 # ============================================================
 # PATHS
@@ -23,67 +20,10 @@ st.set_page_config(
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-
-# ============================================================
-# CUSTOM CSS
-# ============================================================
-
-st.markdown(
-    """
-    <style>
-
-    .main {
-        background-color: #f8fafc;
-    }
-
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-
-    .dashboard-title {
-        font-size: 2.4rem;
-        font-weight: 700;
-        margin-bottom: 0.2rem;
-    }
-
-    .dashboard-subtitle {
-        font-size: 1.05rem;
-        color: #64748b;
-        margin-bottom: 1.5rem;
-    }
-
-    .section-title {
-        font-size: 1.35rem;
-        font-weight: 650;
-        margin-top: 1rem;
-        margin-bottom: 0.8rem;
-    }
-
-    .insight-box {
-        padding: 1rem;
-        border-radius: 10px;
-        background-color: #eef2ff;
-        border-left: 5px solid #6366f1;
-        margin-bottom: 1rem;
-    }
-
-    .attention-box {
-        padding: 1rem;
-        border-radius: 10px;
-        background-color: #fff7ed;
-        border-left: 5px solid #f97316;
-        margin-bottom: 1rem;
-    }
-
-    footer {
-        visibility: hidden;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+STUDENTS_FILE = DATA_DIR / "students.csv"
+SUBJECT_FILE = DATA_DIR / "subject_marks.csv"
+STUDY_FILE = DATA_DIR / "study_hours.csv"
+HISTORY_FILE = DATA_DIR / "performance_history.csv"
 
 
 # ============================================================
@@ -93,768 +33,585 @@ st.markdown(
 @st.cache_data
 def load_data():
 
-    students = pd.read_csv(DATA_DIR / "students.csv")
-    subjects = pd.read_csv(DATA_DIR / "subject_marks.csv")
-    study = pd.read_csv(DATA_DIR / "study_hours.csv")
+    students = pd.read_csv(STUDENTS_FILE)
+    subjects = pd.read_csv(SUBJECT_FILE)
 
-    return students, subjects, study
+    study = None
+    history = None
+
+    if STUDY_FILE.exists():
+        study = pd.read_csv(STUDY_FILE)
+
+    if HISTORY_FILE.exists():
+        history = pd.read_csv(HISTORY_FILE)
+
+    return students, subjects, study, history
 
 
-students, subjects, study_hours = load_data()
-
-
-# ============================================================
-# NORMALIZE COLUMN NAMES
-# ============================================================
-
-students.columns = [
-    str(column).strip().lower()
-    for column in students.columns
-]
-
-subjects.columns = [
-    str(column).strip().lower()
-    for column in subjects.columns
-]
-
-study_hours.columns = [
-    str(column).strip().lower()
-    for column in study_hours.columns
-]
+students, subjects, study, history = load_data()
 
 
 # ============================================================
-# COLUMN DETECTION
+# TITLE
 # ============================================================
 
-def detect_column(df, possible_names):
-
-    for column in possible_names:
-
-        if column in df.columns:
-            return column
-
-    return None
-
-
-student_name = detect_column(
-    students,
-    ["name", "student_name"]
-)
-
-percentage = detect_column(
-    students,
-    ["percentage", "percent"]
-)
-
-total_marks = detect_column(
-    students,
-    ["total", "total_marks"]
-)
-
-grade = detect_column(
-    students,
-    ["grade"]
-)
-
-category = detect_column(
-    students,
-    ["category", "performance_category"]
-)
-
-subject_student = detect_column(
-    subjects,
-    ["name", "student_name"]
-)
-
-subject_name = detect_column(
-    subjects,
-    ["subject", "subject_name"]
-)
-
-subject_marks = detect_column(
-    subjects,
-    ["marks", "mark", "score"]
-)
-
-study_student = detect_column(
-    study_hours,
-    ["name", "student_name"]
-)
-
-study_value = detect_column(
-    study_hours,
-    ["study_hours", "hours", "hours_per_day"]
-)
-
-
-# ============================================================
-# HEADER
-# ============================================================
+st.title("📊 Student Performance Analyzer")
 
 st.markdown(
-    '<div class="dashboard-title">📊 Student Performance Analyzer</div>',
-    unsafe_allow_html=True
+    """
+    ### Academic Performance & Learning Analytics Dashboard
+
+    Analyze academic performance, subject strengths, learning habits,
+    rankings, and student progress using **Python, Pandas,
+    Matplotlib, and Streamlit**.
+    """
 )
 
-st.markdown(
-    '<div class="dashboard-subtitle">'
-    'Academic Performance & Learning Analytics Dashboard'
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-# ============================================================
-# SIDEBAR
-# ============================================================
-
-st.sidebar.title("📊 Dashboard")
-
-st.sidebar.markdown(
-    "### Navigation"
-)
-
-page = st.sidebar.radio(
-    "Choose a section",
-    [
-        "🏠 Class Overview",
-        "👨‍🎓 Student Analysis",
-        "📚 Subject Analysis",
-        "🕐 Study Habits"
-    ]
-)
-
-st.sidebar.markdown("---")
-
-st.sidebar.info(
-    "Student Performance Analyzer\n\n"
-    "Python • Pandas • Matplotlib • Streamlit"
-)
+st.divider()
 
 
 # ============================================================
 # CLASS OVERVIEW
 # ============================================================
 
-if page == "🏠 Class Overview":
+st.subheader("📈 Class Performance Overview")
 
-    st.header("Class Performance Overview")
+col1, col2, col3, col4 = st.columns(4)
 
-    total_students = len(students)
+total_students = len(students)
+class_average = students["Percentage"].mean()
+highest = students["Percentage"].max()
+lowest = students["Percentage"].min()
 
-    avg_percentage = (
-        students[percentage].mean()
-        if percentage
-        else 0
-    )
+with col1:
+    st.metric("👥 Total Students", total_students)
 
-    highest = (
-        students[percentage].max()
-        if percentage
-        else 0
-    )
+with col2:
+    st.metric("📊 Class Average", f"{class_average:.2f}%")
 
-    lowest = (
-        students[percentage].min()
-        if percentage
-        else 0
-    )
+with col3:
+    st.metric("🏆 Highest Percentage", f"{highest:.2f}%")
 
-    # --------------------------------------------------------
-    # KPI CARDS
-    # --------------------------------------------------------
+with col4:
+    st.metric("⚠️ Lowest Percentage", f"{lowest:.2f}%")
 
-    c1, c2, c3, c4 = st.columns(4)
+st.divider()
 
-    c1.metric(
-        "👨‍🎓 Total Students",
-        total_students
-    )
 
-    c2.metric(
-        "📊 Class Average",
-        f"{avg_percentage:.2f}%"
-    )
+# ============================================================
+# SIDEBAR FILTER
+# ============================================================
 
-    c3.metric(
-        "🏆 Highest Score",
-        f"{highest:.2f}%"
-    )
+st.sidebar.title("🎛️ Dashboard Controls")
 
-    c4.metric(
-        "⚠️ Lowest Score",
-        f"{lowest:.2f}%"
-    )
+student_names = sorted(students["Name"].tolist())
 
-    st.markdown("---")
+selected_student = st.sidebar.selectbox(
+    "Select Student",
+    student_names
+)
 
-    # --------------------------------------------------------
-    # TOP PERFORMERS + ATTENTION
-    # --------------------------------------------------------
+st.sidebar.markdown("---")
 
-    left, right = st.columns(2)
+grade_filter = st.sidebar.multiselect(
+    "Filter by Grade",
+    options=sorted(students["Grade"].unique()),
+    default=sorted(students["Grade"].unique())
+)
 
-    with left:
+filtered_students = students[
+    students["Grade"].isin(grade_filter)
+]
 
-        st.subheader("🏆 Top Performers")
 
-        top_students = students.sort_values(
-            percentage,
-            ascending=False
-        ).head(3)
+# ============================================================
+# STUDENT PROFILE
+# ============================================================
 
-        for index, (_, row) in enumerate(
-            top_students.iterrows(),
-            start=1
-        ):
+st.subheader("👤 Student Profile")
 
-            student = row[student_name]
-            score = row[percentage]
+student = students[
+    students["Name"].str.lower() == selected_student.lower()
+].iloc[0]
 
-            st.success(
-                f"{index}. {student} — {score:.2f}%"
-            )
+profile_col1, profile_col2, profile_col3, profile_col4 = st.columns(4)
 
-    with right:
+with profile_col1:
+    st.metric("Student", student["Name"])
 
-        st.subheader("⚠️ Students Needing Attention")
+with profile_col2:
+    st.metric("Percentage", f"{student['Percentage']:.2f}%")
 
-        attention = students[
-            students[percentage] < 50
-        ]
+with profile_col3:
+    st.metric("Grade", student["Grade"])
 
-        if attention.empty:
+with profile_col4:
+    if student["Percentage"] >= 90:
+        category = "Excellent"
+    elif student["Percentage"] >= 80:
+        category = "Good"
+    elif student["Percentage"] >= 60:
+        category = "Average"
+    else:
+        category = "Needs Attention"
 
-            st.success(
-                "No students are currently below 50%."
-            )
+    st.metric("Category", category)
 
-        else:
 
-            for _, row in attention.iterrows():
+# ============================================================
+# STUDENT SUBJECT PERFORMANCE
+# ============================================================
 
-                st.warning(
-                    f"{row[student_name]} — "
-                    f"{row[percentage]:.2f}%"
-                )
+student_subjects = subjects[
+    subjects["Name"].str.lower() == selected_student.lower()
+]
 
-    st.markdown("---")
+if not student_subjects.empty:
 
-    # --------------------------------------------------------
-    # PERFORMANCE TABLE
-    # --------------------------------------------------------
+    st.subheader("📚 Subject-wise Performance")
 
-    st.subheader("📋 Student Performance")
+    chart_col, table_col = st.columns([2, 1])
 
-    display_columns = [
-        column
-        for column in [
-            student_name,
-            total_marks,
-            percentage,
-            grade,
-            category
-        ]
-        if column
-    ]
+    with chart_col:
 
-    performance_table = students[
-        display_columns
-    ].sort_values(
-        percentage,
-        ascending=False
-    )
-
-    st.dataframe(
-        performance_table,
-        use_container_width=True,
-        hide_index=True
-    )
-
-    # --------------------------------------------------------
-    # PERFORMANCE CHART
-    # --------------------------------------------------------
-
-    st.subheader("📈 Student Performance")
-
-    fig, ax = plt.subplots(figsize=(10, 5))
-
-    sorted_students = students.sort_values(
-        percentage,
-        ascending=False
-    )
-
-    ax.bar(
-        sorted_students[student_name],
-        sorted_students[percentage]
-    )
-
-    ax.axhline(
-        avg_percentage,
-        linestyle="--",
-        label=f"Class Average: {avg_percentage:.2f}%"
-    )
-
-    ax.set_ylabel("Percentage")
-    ax.set_xlabel("Student")
-    ax.set_title("Student Performance vs Class Average")
-
-    plt.xticks(rotation=35)
-    ax.legend()
-
-    st.pyplot(fig)
-
-    # --------------------------------------------------------
-    # GRADE DISTRIBUTION
-    # --------------------------------------------------------
-
-    if grade:
-
-        st.subheader("🎓 Grade Distribution")
-
-        grade_counts = students[
-            grade
-        ].value_counts()
-
-        fig, ax = plt.subplots(figsize=(8, 4))
+        fig, ax = plt.subplots()
 
         ax.bar(
-            grade_counts.index,
-            grade_counts.values
+            student_subjects["Subject"],
+            student_subjects["Marks"]
         )
 
-        ax.set_xlabel("Grade")
-        ax.set_ylabel("Students")
-        ax.set_title("Grade Distribution")
+        ax.set_title(
+            f"{selected_student.title()} - Subject Performance"
+        )
+
+        ax.set_xlabel("Subject")
+        ax.set_ylabel("Marks (%)")
+
+        ax.set_ylim(0, 100)
+
+        plt.xticks(rotation=30)
 
         st.pyplot(fig)
 
-    # --------------------------------------------------------
-    # CLASS INSIGHT
-    # --------------------------------------------------------
+        plt.close(fig)
 
-    st.markdown(
-        '<div class="insight-box">'
-        '<b>💡 Class Insight</b><br>'
-        f'The class average is {avg_percentage:.2f}%. '
-        f'The highest score is {highest:.2f}%, while '
-        f'the lowest score is {lowest:.2f}%.'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    with table_col:
 
-
-# ============================================================
-# STUDENT ANALYSIS
-# ============================================================
-
-elif page == "👨‍🎓 Student Analysis":
-
-    st.header("👨‍🎓 Individual Student Analysis")
-
-    selected_student = st.selectbox(
-        "Select a student",
-        students[student_name].tolist()
-    )
-
-    student_row = students[
-        students[student_name] == selected_student
-    ].iloc[0]
-
-    # --------------------------------------------------------
-    # STUDENT METRICS
-    # --------------------------------------------------------
-
-    c1, c2, c3 = st.columns(3)
-
-    if total_marks:
-
-        c1.metric(
-            "Total Marks",
-            f"{student_row[total_marks]:.2f}"
+        st.dataframe(
+            student_subjects[["Subject", "Marks"]],
+            use_container_width=True,
+            hide_index=True
         )
 
-    if percentage:
+        strongest = student_subjects.loc[
+            student_subjects["Marks"].idxmax()
+        ]
 
-        c2.metric(
-            "Percentage",
-            f"{student_row[percentage]:.2f}%"
+        weakest = student_subjects.loc[
+            student_subjects["Marks"].idxmin()
+        ]
+
+        st.success(
+            f"💪 Strongest Subject: **{strongest['Subject']} "
+            f"({strongest['Marks']:.2f}%)**"
         )
-
-    if grade:
-
-        c3.metric(
-            "Grade",
-            student_row[grade]
-        )
-
-    st.markdown("---")
-
-    # --------------------------------------------------------
-    # CATEGORY
-    # --------------------------------------------------------
-
-    if category:
 
         st.info(
-            f"Performance Category: "
-            f"**{student_row[category]}**"
+            f"📌 Lowest Subject: **{weakest['Subject']} "
+            f"({weakest['Marks']:.2f}%)**"
         )
 
-    # --------------------------------------------------------
-    # SUBJECT PERFORMANCE
-    # --------------------------------------------------------
+else:
 
-    st.subheader("📚 Subject Performance")
+    st.info(
+        f"No subject-wise data available for {selected_student}."
+    )
 
-    if (
-        subject_student
-        and subject_name
-        and subject_marks
-    ):
 
-        student_subjects = subjects[
-            subjects[subject_student] == selected_student
-        ]
+st.divider()
 
-        if not student_subjects.empty:
 
-            subject_table = student_subjects[
-                [subject_name, subject_marks]
-            ].copy()
+# ============================================================
+# CLASS RANKING
+# ============================================================
 
-            subject_table = subject_table.sort_values(
-                subject_marks,
-                ascending=False
-            )
+st.subheader("🏆 Student Ranking")
 
-            st.dataframe(
-                subject_table,
-                use_container_width=True,
-                hide_index=True
-            )
+ranking = students.sort_values(
+    "Percentage",
+    ascending=False
+).reset_index(drop=True)
 
-            fig, ax = plt.subplots(figsize=(8, 4))
+ranking.insert(0, "Rank", ranking.index + 1)
 
-            ax.bar(
-                subject_table[subject_name],
-                subject_table[subject_marks]
-            )
+ranking_display = ranking[
+    ["Rank", "Name", "Percentage", "Grade"]
+]
 
-            ax.set_title(
-                f"{selected_student} — Subject Performance"
-            )
+st.dataframe(
+    ranking_display,
+    use_container_width=True,
+    hide_index=True
+)
 
-            ax.set_ylabel("Marks")
 
-            plt.xticks(rotation=35)
+# ============================================================
+# CLASS PERFORMANCE CHART
+# ============================================================
 
-            st.pyplot(fig)
+st.subheader("📊 Student Performance")
 
-            strongest = subject_table.iloc[0]
-            weakest = subject_table.iloc[-1]
+fig, ax = plt.subplots(figsize=(10, 5))
 
-            st.success(
-                f"Strongest Subject: "
-                f"{strongest[subject_name]} "
-                f"({strongest[subject_marks]:.2f})"
-            )
+sorted_students = students.sort_values(
+    "Percentage",
+    ascending=False
+)
 
-            st.warning(
-                f"Subject Needing Most Improvement: "
-                f"{weakest[subject_name]} "
-                f"({weakest[subject_marks]:.2f})"
-            )
+ax.bar(
+    sorted_students["Name"],
+    sorted_students["Percentage"]
+)
 
-    # --------------------------------------------------------
-    # STUDY HOURS
-    # --------------------------------------------------------
+ax.set_title("Student Performance")
+ax.set_xlabel("Student")
+ax.set_ylabel("Percentage")
 
-    st.subheader("🕐 Study Habits")
+ax.set_ylim(0, 100)
 
-    if (
-        study_student
-        and study_value
-    ):
+plt.xticks(rotation=30)
 
-        student_study = study_hours[
-            study_hours[study_student] == selected_student
-        ]
+st.pyplot(fig)
 
-        if not student_study.empty:
+plt.close(fig)
 
-            hours = float(
-                student_study[study_value].iloc[0]
+
+# ============================================================
+# GRADE DISTRIBUTION
+# ============================================================
+
+st.subheader("🎓 Grade Distribution")
+
+grade_counts = students["Grade"].value_counts()
+
+fig, ax = plt.subplots()
+
+ax.bar(
+    grade_counts.index,
+    grade_counts.values
+)
+
+ax.set_title("Grade Distribution")
+ax.set_xlabel("Grade")
+ax.set_ylabel("Number of Students")
+
+st.pyplot(fig)
+
+plt.close(fig)
+
+
+# ============================================================
+# PERFORMANCE CATEGORIES
+# ============================================================
+
+st.subheader("📌 Performance Categories")
+
+
+def get_category(score):
+
+    if score >= 90:
+        return "Excellent"
+
+    elif score >= 80:
+        return "Good"
+
+    elif score >= 60:
+        return "Average"
+
+    else:
+        return "Needs Attention"
+
+
+students_with_category = students.copy()
+
+students_with_category["Category"] = (
+    students_with_category["Percentage"]
+    .apply(get_category)
+)
+
+category_counts = (
+    students_with_category["Category"]
+    .value_counts()
+)
+
+fig, ax = plt.subplots()
+
+ax.bar(
+    category_counts.index,
+    category_counts.values
+)
+
+ax.set_title("Performance Categories")
+ax.set_xlabel("Category")
+ax.set_ylabel("Number of Students")
+
+plt.xticks(rotation=20)
+
+st.pyplot(fig)
+
+plt.close(fig)
+
+
+# ============================================================
+# SUBJECT PERFORMANCE
+# ============================================================
+
+st.subheader("📚 Class Subject Performance")
+
+subject_average = (
+    subjects.groupby("Subject")["Marks"]
+    .mean()
+    .sort_values(ascending=False)
+)
+
+fig, ax = plt.subplots(figsize=(9, 5))
+
+ax.bar(
+    subject_average.index,
+    subject_average.values
+)
+
+ax.set_title("Average Subject Performance")
+ax.set_xlabel("Subject")
+ax.set_ylabel("Average Marks (%)")
+
+ax.set_ylim(0, 100)
+
+plt.xticks(rotation=30)
+
+st.pyplot(fig)
+
+plt.close(fig)
+
+
+# ============================================================
+# STUDY HOURS
+# ============================================================
+
+if study is not None and not study.empty:
+
+    st.subheader("⏱️ Study Hours vs Performance")
+
+    study_data = study.merge(
+        students[["Name", "Percentage"]],
+        on="Name",
+        how="inner"
+    )
+
+    if not study_data.empty:
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        ax.scatter(
+            study_data["StudyHours"],
+            study_data["Percentage"]
+        )
+
+        ax.set_title(
+            "Study Hours vs Academic Performance"
+        )
+
+        ax.set_xlabel("Study Hours / Day")
+        ax.set_ylabel("Percentage")
+
+        ax.set_ylim(0, 100)
+
+        st.pyplot(fig)
+
+        plt.close(fig)
+
+        st.dataframe(
+            study_data,
+            use_container_width=True,
+            hide_index=True
+        )
+
+        if len(study_data) >= 2:
+
+            correlation = (
+                study_data["StudyHours"]
+                .corr(study_data["Percentage"])
             )
 
             st.metric(
-                "Average Study Hours",
-                f"{hours:.2f} hrs/day"
-            )
-
-        else:
-
-            st.info(
-                "Study-hour data is not available "
-                "for this student."
+                "Study Hours / Performance Correlation",
+                f"{correlation:.3f}"
             )
 
 
 # ============================================================
-# SUBJECT ANALYSIS
+# PERFORMANCE TREND
 # ============================================================
 
-elif page == "📚 Subject Analysis":
+if history is not None and not history.empty:
 
-    st.header("📚 Subject Performance Analysis")
+    st.subheader("📈 Performance Trend")
 
-    if (
-        subject_name
-        and subject_marks
-    ):
+    history_student = history[
+        history["Name"].str.lower()
+        == selected_student.lower()
+    ]
 
-        subject_summary = (
-            subjects
-            .groupby(subject_name)[subject_marks]
-            .agg(
-                Average="mean",
-                Highest="max",
-                Lowest="min",
-                Students="count"
-            )
-            .round(2)
-        )
+    if not history_student.empty:
 
-        # ----------------------------------------------------
-        # SUBJECT METRICS
-        # ----------------------------------------------------
+        date_column = None
 
-        strongest_subject = subject_summary[
-            "Average"
-        ].idxmax()
+        for column in ["Date", "date", "Timestamp", "timestamp"]:
+            if column in history_student.columns:
+                date_column = column
+                break
 
-        weakest_subject = subject_summary[
-            "Average"
-        ].idxmin()
+        percentage_column = None
 
-        c1, c2 = st.columns(2)
+        for column in [
+            "Percentage",
+            "percentage",
+            "Score",
+            "score"
+        ]:
+            if column in history_student.columns:
+                percentage_column = column
+                break
 
-        c1.metric(
-            "💪 Strongest Subject",
-            strongest_subject
-        )
+        if percentage_column:
 
-        c2.metric(
-            "📌 Needs Most Attention",
-            weakest_subject
-        )
+            if date_column:
 
-        st.markdown("---")
+                history_student = history_student.sort_values(
+                    date_column
+                )
 
-        st.subheader("📊 Subject Statistics")
+                fig, ax = plt.subplots(figsize=(9, 5))
 
-        st.dataframe(
-            subject_summary,
-            use_container_width=True
-        )
+                ax.plot(
+                    history_student[date_column],
+                    history_student[percentage_column],
+                    marker="o"
+                )
 
-        # ----------------------------------------------------
-        # SUBJECT CHART
-        # ----------------------------------------------------
+                ax.set_title(
+                    f"{selected_student.title()} - Performance Trend"
+                )
 
-        st.subheader("📈 Average Performance by Subject")
+                ax.set_xlabel("Date")
+                ax.set_ylabel("Percentage")
 
-        fig, ax = plt.subplots(figsize=(9, 5))
+                ax.set_ylim(0, 100)
 
-        ax.bar(
-            subject_summary.index,
-            subject_summary["Average"]
-        )
+                plt.xticks(rotation=30)
 
-        ax.set_ylabel("Average Marks")
-        ax.set_xlabel("Subject")
-        ax.set_title("Subject-wise Average Performance")
+                st.pyplot(fig)
 
-        plt.xticks(rotation=35)
+                plt.close(fig)
 
-        st.pyplot(fig)
+            else:
 
-        # ----------------------------------------------------
-        # INSIGHT
-        # ----------------------------------------------------
-
-        strongest_score = subject_summary.loc[
-            strongest_subject,
-            "Average"
-        ]
-
-        weakest_score = subject_summary.loc[
-            weakest_subject,
-            "Average"
-        ]
-
-        st.markdown(
-            '<div class="insight-box">'
-            '<b>💡 Subject Insight</b><br>'
-            f'{strongest_subject} is currently the strongest '
-            f'subject with an average of {strongest_score:.2f}%. '
-            f'{weakest_subject} has the lowest average at '
-            f'{weakest_score:.2f}%.'
-            '</div>',
-            unsafe_allow_html=True
-        )
-
-
-# ============================================================
-# STUDY HABITS
-# ============================================================
-
-elif page == "🕐 Study Habits":
-
-    st.header("🕐 Study Habits & Learning Analysis")
-
-    if (
-        study_student
-        and study_value
-    ):
-
-        study_data = study_hours.copy()
-
-        study_data[study_value] = pd.to_numeric(
-            study_data[study_value],
-            errors="coerce"
-        )
-
-        study_data = study_data.dropna(
-            subset=[study_value]
-        )
-
-        if not study_data.empty:
-
-            average_hours = study_data[
-                study_value
-            ].mean()
-
-            highest_hours = study_data[
-                study_value
-            ].max()
-
-            lowest_hours = study_data[
-                study_value
-            ].min()
-
-            c1, c2, c3 = st.columns(3)
-
-            c1.metric(
-                "Average Study Time",
-                f"{average_hours:.2f} hrs/day"
-            )
-
-            c2.metric(
-                "Highest Study Time",
-                f"{highest_hours:.2f} hrs/day"
-            )
-
-            c3.metric(
-                "Lowest Study Time",
-                f"{lowest_hours:.2f} hrs/day"
-            )
-
-            st.markdown("---")
-
-            # ------------------------------------------------
-            # STUDY HOURS TABLE
-            # ------------------------------------------------
-
-            st.subheader("📋 Study Hours by Student")
-
-            st.dataframe(
-                study_data,
-                use_container_width=True,
-                hide_index=True
-            )
-
-            # ------------------------------------------------
-            # STUDY HOURS CHART
-            # ------------------------------------------------
-
-            st.subheader("📊 Study Hours Distribution")
-
-            fig, ax = plt.subplots(figsize=(9, 5))
-
-            ax.bar(
-                study_data[study_student],
-                study_data[study_value]
-            )
-
-            ax.axhline(
-                average_hours,
-                linestyle="--",
-                label=f"Average: {average_hours:.2f}"
-            )
-
-            ax.set_xlabel("Student")
-            ax.set_ylabel("Hours / Day")
-            ax.set_title("Study Hours by Student")
-
-            plt.xticks(rotation=35)
-            ax.legend()
-
-            st.pyplot(fig)
-
-            # ------------------------------------------------
-            # TOP STUDY TIME
-            # ------------------------------------------------
-
-            highest_student = study_data.loc[
-                study_data[study_value].idxmax(),
-                study_student
-            ]
-
-            lowest_student = study_data.loc[
-                study_data[study_value].idxmin(),
-                study_student
-            ]
-
-            st.success(
-                f"Highest study time: **{highest_student}**"
-            )
-
-            st.info(
-                f"Lowest recorded study time: **{lowest_student}**"
-            )
-
-            st.markdown(
-                '<div class="insight-box">'
-                '<b>💡 Learning Insight</b><br>'
-                'Study time can provide useful context for '
-                'understanding academic performance, but '
-                'study hours alone do not establish causation.'
-                '</div>',
-                unsafe_allow_html=True
-            )
-
-        else:
-
-            st.warning(
-                "No valid study-hour data available."
-            )
+                st.line_chart(
+                    history_student[percentage_column]
+                )
 
     else:
 
-        st.warning(
-            "Study-hour columns could not be detected."
+        st.info(
+            f"No performance history available for {selected_student}."
         )
+
+
+# ============================================================
+# PERSONALIZED INSIGHT
+# ============================================================
+
+st.divider()
+
+st.subheader("💡 Personalized Learning Insight")
+
+percentage = float(student["Percentage"])
+
+if percentage >= 90:
+
+    st.success(
+        f"""
+        **{selected_student.title()} is performing at an excellent level.**
+
+        Maintain the current study routine, continue practicing consistently,
+        and focus on advanced problems to achieve further growth.
+        """
+    )
+
+elif percentage >= 80:
+
+    st.info(
+        f"""
+        **{selected_student.title()} is performing well.**
+
+        Continue regular practice and focus on improving weaker subjects
+        to move toward the excellent category.
+        """
+    )
+
+elif percentage >= 60:
+
+    st.warning(
+        f"""
+        **{selected_student.title()} has average academic performance.**
+
+        More consistent practice and additional attention to weaker subjects
+        can help improve the overall score.
+        """
+    )
+
+else:
+
+    st.error(
+        f"""
+        **{selected_student.title()} needs additional academic attention.**
+
+        Focus on foundational concepts, regular practice, and targeted support
+        in weaker subjects.
+        """
+    )
+
+
+# ============================================================
+# FILTERED CLASS DATA
+# ============================================================
+
+st.divider()
+
+st.subheader("🔎 Filtered Class Data")
+
+st.write(
+    f"Showing **{len(filtered_students)}** student(s) "
+    f"matching the selected grade filters."
+)
+
+st.dataframe(
+    filtered_students[
+        ["Name", "Total", "Percentage", "Grade"]
+    ],
+    use_container_width=True,
+    hide_index=True
+)
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-st.markdown("---")
+st.divider()
 
 st.caption(
-    "Student Performance Analyzer • "
-    "Python | Pandas | Matplotlib | Streamlit"
+    "Student Performance Analyzer | "
+    "Python • Pandas • Matplotlib • Streamlit"
 )
