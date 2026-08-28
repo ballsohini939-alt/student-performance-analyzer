@@ -155,13 +155,13 @@ The dashboard provides:
 
 Below are screenshots of the interactive Streamlit dashboard.
 
-## 📊 Dashboard Overview
+## 📊 Dashboard Overview & Student Profile
 
 ![Dashboard Overview](screenshots/01_dashboard_overview.png)
 
 ---
 
-## 👤 Student Profile
+## 👤 Student Performance
 
 ![Student Profile](screenshots/02_student_profile.png)
 
