@@ -161,7 +161,7 @@ Below are screenshots of the interactive Streamlit dashboard.
 
 ---
 
-## 📌 Student's Performance
+## 📌 Student Performance
 
 ![Performance Categories](screenshots/06_performance_categories.png)
 
