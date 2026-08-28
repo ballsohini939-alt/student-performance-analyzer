@@ -3,3 +3,5 @@ __pycache__/
 charts/*.png
 reports/*.pdf
 data/performance_history.csv
+desktop.ini
+Thumbs.db
