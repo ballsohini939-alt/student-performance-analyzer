@@ -167,12 +167,6 @@ Below are screenshots of the interactive Streamlit dashboard.
 
 ---
 
-## 📊 Student Performance
-
-![Student Performance](screenshots/04_student_performance.png)
-
----
-
 ## 🎓 Grade Distribution
 
 ![Grade Distribution](screenshots/05_grade_distribution.png)
@@ -259,7 +253,6 @@ student-performance-analyzer/
 ├── screenshots/
 │   ├── 01_dashboard_overview.png
 │   ├── 02_student_profile.png
-│   ├── 04_student_performance.png
 │   ├── 05_grade_distribution.png
 │   ├── 06_performance_categories.png
 │   ├── 07_subject_performance.png
