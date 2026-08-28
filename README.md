@@ -131,9 +131,9 @@ The project includes an interactive **Streamlit dashboard** that brings the anal
 
 Run it using:
 
-```bash
+
 streamlit run dashboard.py
-```
+
 
 The dashboard provides:
 
