@@ -39,11 +39,7 @@ from student_profile import get_student_profile
 from performance_comparison import compare_students
 from class_dashboard import display_class_dashboard
 from performance_trend import performance_trend_menu
-
-# Text report generator
 from report_generator import generate_student_report
-
-# PDF report generator
 from pdf_report_generator import generate_student_pdf_report
 
 
@@ -301,6 +297,7 @@ def show_menu():
     print("10. Data Visualizations")
     print("11. Exit")
     print("12. Generate Student Report")
+    print("13. Generate PDF Student Report")
 
 
 # ============================================================
@@ -1416,7 +1413,7 @@ def visualization_menu():
 
 def generate_report():
     """
-    Generate both text and PDF reports for a selected student.
+    Generate a text report for a selected student.
     """
 
     print(
@@ -1435,72 +1432,87 @@ def generate_report():
 
         return
 
-    # --------------------------------------------------------
-    # Generate Text Report
-    # --------------------------------------------------------
-
-    text_report_path = generate_student_report(
+    report_path = generate_student_report(
         name
     )
 
-    # --------------------------------------------------------
-    # Generate PDF Report
-    # --------------------------------------------------------
-
-    pdf_report_path = generate_student_pdf_report(
-        name
-    )
-
-    # --------------------------------------------------------
-    # Display Results
-    # --------------------------------------------------------
-
-    if text_report_path and pdf_report_path:
+    if report_path:
 
         print(
-            "\nStudent reports generated successfully!"
+            "\nStudent report generated successfully!"
         )
 
         print(
-            f"Text Report : {text_report_path}"
-        )
-
-        print(
-            f"PDF Report  : {pdf_report_path}"
-        )
-
-    elif text_report_path:
-
-        print(
-            "\nText report generated successfully."
-        )
-
-        print(
-            f"Text Report : {text_report_path}"
-        )
-
-        print(
-            "PDF report could not be generated."
-        )
-
-    elif pdf_report_path:
-
-        print(
-            "\nPDF report generated successfully."
-        )
-
-        print(
-            f"PDF Report  : {pdf_report_path}"
-        )
-
-        print(
-            "Text report could not be generated."
+            f"Report saved at: {report_path}"
         )
 
     else:
 
         print(
             f"\nStudent '{name}' was not found."
+        )
+
+
+# ============================================================
+# GENERATE PDF STUDENT REPORT
+# ============================================================
+
+def generate_pdf_report():
+    """
+    Generate a professional PDF report
+    for a selected student.
+    """
+
+    print(
+        "\n========== GENERATE PDF STUDENT REPORT =========="
+    )
+
+    name = input(
+        "Enter student name: "
+    ).strip()
+
+    if not name:
+
+        print(
+            "\nStudent name cannot be empty."
+        )
+
+        return
+
+    try:
+
+        pdf_path = generate_student_pdf_report(
+            name
+        )
+
+        if pdf_path:
+
+            print(
+                "\nProfessional PDF report generated successfully!"
+            )
+
+            print(
+                f"PDF saved at: {pdf_path}"
+            )
+
+            print(
+                "\nYou can open the PDF from the reports folder."
+            )
+
+        else:
+
+            print(
+                f"\nStudent '{name}' was not found."
+            )
+
+    except Exception as error:
+
+        print(
+            "\nError generating PDF report."
+        )
+
+        print(
+            f"Details: {error}"
         )
 
 
@@ -1647,6 +1659,14 @@ def main():
             generate_report()
 
         # ----------------------------------------------------
+        # Generate PDF Student Report
+        # ----------------------------------------------------
+
+        elif choice == "13":
+
+            generate_pdf_report()
+
+        # ----------------------------------------------------
         # Invalid Choice
         # ----------------------------------------------------
 
@@ -1654,7 +1674,7 @@ def main():
 
             print(
                 "\nInvalid choice. "
-                "Please select 1-12."
+                "Please select 1-13."
             )
 
 
