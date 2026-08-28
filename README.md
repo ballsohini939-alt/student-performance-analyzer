@@ -129,11 +129,11 @@ Charts are generated using **Matplotlib**.
 
 The project includes an interactive **Streamlit dashboard** that brings the analytics together in one interface.
 
-Run it using:
+### Run the dashboard
 
-
+```bash
 streamlit run dashboard.py
-
+```
 
 The dashboard provides:
 
@@ -226,7 +226,7 @@ Below are screenshots of the interactive Streamlit dashboard.
 
 # 📁 Project Structure
 
-
+```text
 student-performance-analyzer/
 │
 ├── main.py
@@ -270,7 +270,7 @@ student-performance-analyzer/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
-
+```
 
 ---
 
@@ -278,33 +278,33 @@ student-performance-analyzer/
 
 ## 1. Clone the Repository
 
-
+```bash
 git clone https://github.com/ballsohini939-alt/student-performance-analyzer.git
-
+```
 
 ## 2. Open the Project Directory
 
-
+```bash
 cd student-performance-analyzer
-
+```
 
 ## 3. Install Dependencies
 
-
+```bash
 pip install -r requirements.txt
-
+```
 
 ## 4. Run the Console Application
 
-
+```bash
 python main.py
-
+```
 
 ## 5. Run the Streamlit Dashboard
 
-
+```bash
 streamlit run dashboard.py
-
+```
 
 The dashboard will open in your browser.
 
