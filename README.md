@@ -153,6 +153,8 @@ The dashboard provides:
 
 # 📸 Dashboard Screenshots
 
+Below are screenshots of the interactive Streamlit dashboard.
+
 ## 📊 Dashboard Overview
 
 ![Dashboard Overview](screenshots/01_dashboard_overview.png)
@@ -224,7 +226,7 @@ The dashboard provides:
 
 # 📁 Project Structure
 
-```text
+
 student-performance-analyzer/
 │
 ├── main.py
@@ -268,7 +270,7 @@ student-performance-analyzer/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
-```
+
 
 ---
 
@@ -276,33 +278,33 @@ student-performance-analyzer/
 
 ## 1. Clone the Repository
 
-```bash
+
 git clone https://github.com/ballsohini939-alt/student-performance-analyzer.git
-```
+
 
 ## 2. Open the Project Directory
 
-```bash
+
 cd student-performance-analyzer
-```
+
 
 ## 3. Install Dependencies
 
-```bash
+
 pip install -r requirements.txt
-```
+
 
 ## 4. Run the Console Application
 
-```bash
+
 python main.py
-```
+
 
 ## 5. Run the Streamlit Dashboard
 
-```bash
+
 streamlit run dashboard.py
-```
+
 
 The dashboard will open in your browser.
 
@@ -361,7 +363,7 @@ Planned improvements include:
 
 # 📌 Project Status
 
-**Completed Core Analytics + Interactive Dashboard Version**
+### ✅ Completed Core Analytics + Interactive Dashboard Version
 
 The project currently includes:
 
@@ -394,5 +396,3 @@ This project is part of my journey of learning **Python, data analysis, visualiz
 ## ⭐ If you find this project useful
 
 Consider giving the repository a **star ⭐** and exploring the project.
-
----
