@@ -15,60 +15,38 @@ def _ensure_history_file():
     if not os.path.exists(HISTORY_FILE):
         with open(HISTORY_FILE, "w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(
-                ["Name", "Percentage", "Grade", "Date"]
-            )
+            writer.writerow(["Name", "Percentage", "Grade", "Date"])
 
 
 def record_performance(name, percentage, grade):
-    """
-    Save a student's current performance
-    into the performance history.
-    """
+    """Save a student's current performance into history."""
 
     _ensure_history_file()
 
     today = datetime.now().strftime("%Y-%m-%d")
 
-    # Avoid recording the exact same performance
-    # for the same student on the same date.
-    existing_records = []
-
-    with open(
-        HISTORY_FILE,
-        "r",
-        newline=""
-    ) as file:
-
+    with open(HISTORY_FILE, "r", newline="") as file:
         reader = csv.DictReader(file)
         existing_records = list(reader)
 
+    # Avoid duplicate record for same student,
+    # same date and same percentage.
     for record in existing_records:
         if (
-            record["Name"].strip().lower()
-            == name.strip().lower()
+            record["Name"].strip().lower() == name.strip().lower()
             and record["Date"] == today
-            and float(record["Percentage"])
-            == float(percentage)
+            and abs(float(record["Percentage"]) - float(percentage)) < 0.001
         ):
             return
 
-    with open(
-        HISTORY_FILE,
-        "a",
-        newline=""
-    ) as file:
-
+    with open(HISTORY_FILE, "a", newline="") as file:
         writer = csv.writer(file)
-
-        writer.writerow(
-            [
-                name,
-                f"{float(percentage):.2f}",
-                grade,
-                today
-            ]
-        )
+        writer.writerow([
+            name,
+            f"{float(percentage):.2f}",
+            grade,
+            today
+        ])
 
 
 def _load_history():
@@ -76,14 +54,8 @@ def _load_history():
 
     _ensure_history_file()
 
-    with open(
-        HISTORY_FILE,
-        "r",
-        newline=""
-    ) as file:
-
+    with open(HISTORY_FILE, "r", newline="") as file:
         reader = csv.DictReader(file)
-
         return list(reader)
 
 
@@ -93,16 +65,10 @@ def _load_current_student(name):
     if not os.path.exists(STUDENT_FILE):
         return None
 
-    with open(
-        STUDENT_FILE,
-        "r",
-        newline=""
-    ) as file:
-
+    with open(STUDENT_FILE, "r", newline="") as file:
         reader = csv.DictReader(file)
 
         for student in reader:
-
             if (
                 student["Name"].strip().lower()
                 == name.strip().lower()
@@ -113,29 +79,26 @@ def _load_current_student(name):
 
 
 def _get_student_history(name):
-    """Return performance records for one student."""
+    """Return performance history for one student."""
 
     history = _load_history()
 
     records = []
 
     for record in history:
-
         if (
             record["Name"].strip().lower()
             == name.strip().lower()
         ):
             records.append(record)
 
-    records.sort(
-        key=lambda x: x["Date"]
-    )
+    records.sort(key=lambda x: x["Date"])
 
     return records
 
 
 def _get_trend(previous, current):
-    """Determine the performance trend."""
+    """Determine performance trend."""
 
     difference = current - previous
 
@@ -157,21 +120,15 @@ def compare_current_performance(name):
     student = _load_current_student(name)
 
     if student is None:
-        print(
-            f"\nStudent '{name}' was not found."
-        )
+        print(f"\nStudent '{name}' was not found.")
         return
 
-    current_percentage = float(
-        student["Percentage"]
-    )
-
+    current_percentage = float(student["Percentage"])
     current_grade = student["Grade"]
 
     history = _get_student_history(name)
 
-    # If there is no historical record,
-    # save the current performance as the first snapshot.
+    # First performance record
     if not history:
 
         record_performance(
@@ -180,25 +137,16 @@ def compare_current_performance(name):
             current_grade
         )
 
-        history = _get_student_history(name)
+        print("\nNo previous performance record was available.")
+        print("The current performance has been saved as the first record.")
 
         print(
-            "\nNo previous performance record "
-            "was available."
-        )
-
-        print(
-            "The current performance has been "
-            "saved as the first record."
-        )
-
-        print(
-            "\nCurrent Percentage : "
+            f"\nCurrent Percentage : "
             f"{current_percentage:.2f}%"
         )
 
         print(
-            "Current Grade      : "
+            f"Current Grade      : "
             f"{current_grade}"
         )
 
@@ -206,68 +154,45 @@ def compare_current_performance(name):
 
     latest = history[-1]
 
-    previous_percentage = float(
-        latest["Percentage"]
-    )
-
+    previous_percentage = float(latest["Percentage"])
     previous_date = latest["Date"]
 
-    # If today's historical record already contains
-    # the current percentage, there is nothing to compare.
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # Already recorded today
     if (
-        previous_date
-        == datetime.now().strftime("%Y-%m-%d")
-        and abs(
-            previous_percentage
-            - current_percentage
-        ) < 0.001
+        previous_date == today
+        and abs(previous_percentage - current_percentage) < 0.001
     ):
 
+        print("\nCurrent performance is already recorded for today.")
+
         print(
-            "\nCurrent performance is already "
-            "recorded for today."
+            f"Percentage : "
+            f"{current_percentage:.2f}%"
         )
 
         print(
-            f"Percentage : {current_percentage:.2f}%"
-        )
-
-        print(
-            f"Grade      : {current_grade}"
+            f"Grade      : "
+            f"{current_grade}"
         )
 
         return
 
-    difference = (
-        current_percentage
-        - previous_percentage
-    )
+    difference = current_percentage - previous_percentage
 
     trend = _get_trend(
         previous_percentage,
         current_percentage
     )
 
-    print(
-        "\n" + "=" * 60
-    )
+    print("\n" + "=" * 60)
+    print("                 PERFORMANCE TREND")
+    print("=" * 60)
 
-    print(
-        "                 PERFORMANCE TREND"
-    )
+    print(f"\nStudent: {student['Name']}")
 
-    print(
-        "=" * 60
-    )
-
-    print(
-        f"\nStudent: {student['Name']}"
-    )
-
-    print(
-        "\nPERFORMANCE COMPARISON"
-    )
-
+    print("\nPERFORMANCE COMPARISON")
     print("-" * 60)
 
     print(
@@ -300,34 +225,19 @@ def compare_current_performance(name):
         f"{previous_date}"
     )
 
-    print(
-        "\nTREND"
-    )
-
+    print("\nTREND")
     print("-" * 60)
 
     if trend == "Improving":
-
-        print(
-            "↑ Improving"
-        )
+        print("UP Improving")
 
     elif trend == "Declining":
-
-        print(
-            "↓ Declining"
-        )
+        print("DOWN Declining")
 
     else:
+        print("SAME Stable")
 
-        print(
-            "→ Stable"
-        )
-
-    print(
-        "\nTREND INSIGHT"
-    )
-
+    print("\nTREND INSIGHT")
     print("-" * 60)
 
     if trend == "Improving":
@@ -366,11 +276,9 @@ def compare_current_performance(name):
             "achieve further improvement."
         )
 
-    print(
-        "\n" + "=" * 60
-    )
+    print("\n" + "=" * 60)
 
-    # Save the current performance
+    # Save current performance
     record_performance(
         student["Name"],
         current_percentage,
@@ -384,14 +292,12 @@ def display_performance_history(name):
     student = _load_current_student(name)
 
     if student is None:
-        print(
-            f"\nStudent '{name}' was not found."
-        )
+        print(f"\nStudent '{name}' was not found.")
         return
 
     history = _get_student_history(name)
 
-    # Save current performance if there is no history.
+    # Create first record if none exists
     if not history:
 
         record_performance(
@@ -402,29 +308,14 @@ def display_performance_history(name):
 
         history = _get_student_history(name)
 
-    print(
-        "\n" + "=" * 60
-    )
+    print("\n" + "=" * 60)
+    print("              PERFORMANCE HISTORY")
+    print("=" * 60)
 
-    print(
-        "              PERFORMANCE HISTORY"
-    )
+    print(f"\nStudent: {student['Name']}")
 
-    print(
-        "=" * 60
-    )
-
-    print(
-        f"\nStudent: {student['Name']}"
-    )
-
-    print(
-        "\nDate            Percentage      Grade"
-    )
-
-    print(
-        "-" * 60
-    )
+    print("\nDate            Percentage      Grade")
+    print("-" * 60)
 
     for record in history:
 
@@ -434,19 +325,12 @@ def display_performance_history(name):
             f"{record['Grade']:<10}"
         )
 
-    print(
-        "-" * 60
-    )
+    print("-" * 60)
 
     if len(history) >= 2:
 
-        first = float(
-            history[0]["Percentage"]
-        )
-
-        latest = float(
-            history[-1]["Percentage"]
-        )
+        first = float(history[0]["Percentage"])
+        latest = float(history[-1]["Percentage"])
 
         total_change = latest - first
 
@@ -456,22 +340,13 @@ def display_performance_history(name):
         )
 
         if total_change > 0.5:
-
-            print(
-                "Overall Trend  : ↑ Improving"
-            )
+            print("Overall Trend  : UP Improving")
 
         elif total_change < -0.5:
-
-            print(
-                "Overall Trend  : ↓ Declining"
-            )
+            print("Overall Trend  : DOWN Declining")
 
         else:
-
-            print(
-                "Overall Trend  : → Stable"
-            )
+            print("Overall Trend  : SAME Stable")
 
     else:
 
@@ -480,9 +355,7 @@ def display_performance_history(name):
             "needed to calculate a long-term trend."
         )
 
-    print(
-        "\n" + "=" * 60
-    )
+    print("\n" + "=" * 60)
 
 
 def performance_trend_menu():
@@ -490,33 +363,15 @@ def performance_trend_menu():
 
     while True:
 
-        print(
-            "\n" + "=" * 50
-        )
+        print("\n" + "=" * 50)
+        print("          PERFORMANCE TREND")
+        print("=" * 50)
 
-        print(
-            "          PERFORMANCE TREND"
-        )
+        print("1. Compare Current Performance")
+        print("2. View Performance History")
+        print("3. Back to Main Menu")
 
-        print(
-            "=" * 50
-        )
-
-        print(
-            "1. Compare Current Performance"
-        )
-
-        print(
-            "2. View Performance History"
-        )
-
-        print(
-            "3. Back to Main Menu"
-        )
-
-        choice = input(
-            "\nEnter your choice: "
-        ).strip()
+        choice = input("\nEnter your choice: ").strip()
 
         if choice == "1":
 
@@ -525,13 +380,9 @@ def performance_trend_menu():
             ).strip()
 
             if name:
-
-                compare_current_performance(
-                    name
-                )
+                compare_current_performance(name)
 
             else:
-
                 print(
                     "\nStudent name cannot be empty."
                 )
@@ -543,19 +394,14 @@ def performance_trend_menu():
             ).strip()
 
             if name:
-
-                display_performance_history(
-                    name
-                )
+                display_performance_history(name)
 
             else:
-
                 print(
                     "\nStudent name cannot be empty."
                 )
 
         elif choice == "3":
-
             break
 
         else:
@@ -567,5 +413,4 @@ def performance_trend_menu():
 
 
 if __name__ == "__main__":
-
     performance_trend_menu()
