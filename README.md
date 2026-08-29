@@ -155,13 +155,19 @@ The dashboard provides:
 
 Below are screenshots of the interactive Streamlit dashboard.
 
-## 📊 Dashboard Overview
+## 📊 Dashboard Overview & Student Profile
 
 ![Dashboard Overview](screenshots/01_dashboard_overview.png)
 
 ---
 
-## 👤 Student Profile
+## 📌 Student Performance
+
+![Performance Categories](screenshots/06_performance_categories.png)
+
+---
+
+## 👤 Subjectwise Performance
 
 ![Student Profile](screenshots/02_student_profile.png)
 
@@ -171,15 +177,10 @@ Below are screenshots of the interactive Streamlit dashboard.
 
 ![Grade Distribution](screenshots/05_grade_distribution.png)
 
----
-
-## 📌 Performance Categories
-
-![Performance Categories](screenshots/06_performance_categories.png)
 
 ---
 
-## 📚 Subject Performance
+## 📚 Performance Category 
 
 ![Subject Performance](screenshots/07_subject_performance.png)
 
