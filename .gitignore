@@ -1,7 +1,43 @@
-__pycache__/
-*.pyc
+# Python cache and compiled files
+
+**pycache**/
+*.py[cod]
+
+# Generated charts
+
 charts/*.png
+
+# Generated PDF reports
+
 reports/*.pdf
+
+# Generated performance history
+
 data/performance_history.csv
+
+# Local student records (uncomment if these contain private data)
+
+# data/students.csv
+
+# data/subject_marks.csv
+
+# data/study_hours.csv
+
+# Virtual environments
+
+venv/
+.venv/
+
+# Environment variables and secrets
+
+.env
+.env.*
+
+# Windows system files
+
 desktop.ini
 Thumbs.db
+
+# macOS system files
+
+.DS_Store
