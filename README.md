@@ -1,229 +1,142 @@
 # 📊 Student Performance Analyzer
 
-### Academic Performance & Learning Analytics Dashboard
+### Academic Analytics · Performance Tracking · Learning Insights
 
-A Python-based academic analytics application that helps analyze **student performance, subject-wise marks, learning habits, rankings, performance trends, and personalized learning insights**.
+A Python-based academic analytics application that helps analyze student performance, compare academic results, visualize class statistics, track performance trends, and generate student reports.
 
-Built using **Python, Pandas, Matplotlib, ReportLab, and Streamlit**.
+The project combines data analysis, visualization, and an interactive Streamlit dashboard to turn academic records into meaningful insights.
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Pandas-Data%20Analysis-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas">
+  <img src="https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/Matplotlib-Visualization-11557C?style=for-the-badge" alt="Matplotlib">
+</p>
 
 ---
 
-## 🚀 Project Overview
+## 📌 Overview
 
-**Student Performance Analyzer** started as a Python learning project and evolved into a feature-rich academic analytics application.
+Student Performance Analyzer brings student records and academic analytics together in one application.
 
-The system allows users to manage student records, analyze academic performance, compare students, visualize class-level statistics, track performance trends, generate reports, and explore personalized learning insights through an interactive Streamlit dashboard.
+It supports student record management, marks and grade calculations, student comparisons, class-level statistics, subject-wise analysis, study-hour analysis, performance trends, and report generation.
 
----
+The application also includes an interactive dashboard built with Streamlit for exploring academic performance and visualizing important patterns.
 
 ## ✨ Key Features
 
 ### 👨‍🎓 Student Management
 
-* Add student records
-* Update existing student records
-* Store subject-wise marks
-* Calculate total marks
-* Calculate percentage
-* Automatically determine grades
-* View all students
-* Search for individual students
+* Add, update, view, and search student records.
+* Store subject-wise marks.
+* Calculate total marks, percentages, and grades.
+* Validate student information and prevent duplicate records.
 
-### 👤 Student Profile
+### 📊 Academic Analytics
 
-* Detailed academic profile
-* Percentage and grade
-* Performance category
-* Strongest subject
-* Weakest subject
-* Study-hour analysis
-* Personalized learning recommendations
-* Learning insights
+* Calculate class averages and subject averages.
+* Rank students by academic performance.
+* Analyze grade distributions and performance categories.
+* Identify top-performing and lower-performing students.
+* Compare academic results across students and subjects.
 
-### ⚖️ Student Comparison
+### 📈 Performance Tracking
 
-* Compare two students
-* Compare total marks
-* Compare percentages
-* Compare grades
-* Compare performance categories
-* Subject-wise comparison
-* Identify subject winners
-* Analyze performance gaps
-* Compare learning habits when data is available
+* Track changes in student performance over time.
+* Compare current and previous results.
+* Identify improving, declining, and stable performance.
+* Analyze study hours alongside academic outcomes.
 
-### 📊 Class Performance Dashboard
+### 📉 Data Visualization
 
-* Total number of students
-* Class average
-* Highest percentage
-* Lowest percentage
-* Top performers
-* Student needing most attention
-* Pass rate
-* Grade distribution
-* Performance categories
-* Subject performance
-* Learning-habit statistics
-* Class-level insights
-* Academic recommendations
+* Student performance charts.
+* Grade distribution.
+* Performance category analysis.
+* Subject-wise performance.
+* Study hours versus performance.
+* Performance trend charts.
 
-### 📈 Performance Trend Analysis
+### 💡 Student Insights
 
-* Compare current and previous performance
-* Track percentage changes
-* Track grade changes
-* View performance history
-* Identify improving students
-* Identify declining students
-* Identify stable performance
-
-### 🧮 Advanced Analytics
-
-* Dataset summary
-* Class average
-* Top-performing student
-* Lowest-performing student
-* Grade statistics
-* Performance categories
-* Subject averages
-* Study-hour statistics
-* Study hours vs performance
-* Correlation analysis
-* Personalized learning recommendations
-
-### 🐼 Pandas Data Analysis
-
-* Statistical summary
-* Mean and median performance
-* Student ranking
-* Grade distribution
-* Performance categories
-* Subject statistics
-* Study-hour statistics
-* Study hours vs performance
-* Correlation analysis
-
-### 📊 Data Visualization
-
-The application generates analytical visualizations for:
-
-1. Student Performance
-2. Grade Distribution
-3. Performance Categories
-4. Subject Performance
-5. Study Hours vs Performance
-6. Performance Trends
-
-Charts are generated using **Matplotlib**.
+* Generate individual student profiles.
+* Identify stronger and weaker subjects.
+* Analyze learning habits when data is available.
+* Provide rule-based learning recommendations.
 
 ### 📄 Report Generation
 
-* Generate individual student text reports
-* Generate professional PDF student reports
-* Store generated reports inside the `reports/` directory
+* Generate student reports.
+* Create PDF reports using ReportLab.
+* Store generated reports in the reports directory.
 
----
+## 🖥️ Interactive Dashboard
 
-# 🖥️ Interactive Streamlit Dashboard
+The Streamlit dashboard provides an interactive interface for exploring academic data.
 
-The project includes an interactive **Streamlit dashboard** that brings the analytics together in one interface.
-
-### Run the dashboard
+Run the dashboard with:
 
 ```bash
 streamlit run dashboard.py
 ```
 
-The dashboard provides:
+Explore student profiles, class statistics, rankings, subject-wise performance, grade distributions, performance trends, and learning insights.
 
-* 📈 Class performance overview
-* 👤 Student profiles
-* 📚 Subject-wise performance
-* 🏆 Student rankings
-* 📊 Performance charts
-* 🎓 Grade distribution
-* 📌 Performance categories
-* ⏱️ Study-hours analysis
-* 📈 Performance trends
-* 💡 Personalized learning insights
-* 🔎 Class data filtering
+## 📸 Dashboard Preview
 
----
+The repository includes screenshots of the dashboard and its analytics.
 
-# 📸 Dashboard Screenshots
-
-Below are screenshots of the interactive Streamlit dashboard.
-
-## 📊 Dashboard Overview & Student Profile
+### Dashboard Overview
 
 ![Dashboard Overview](screenshots/01_dashboard_overview.png)
 
----
-
-## 📌 Student Performance
-
-![Performance Categories](screenshots/06_performance_categories.png)
-
----
-
-## 👤 Subjectwise Performance
+### Student Profile
 
 ![Student Profile](screenshots/02_student_profile.png)
 
----
-
-## 🎓 Grade Distribution
+### Grade Distribution
 
 ![Grade Distribution](screenshots/05_grade_distribution.png)
 
+### Performance Categories
 
----
+![Performance Categories](screenshots/06_performance_categories.png)
 
-## 📚 Performance Category 
+### Subject Performance
 
 ![Subject Performance](screenshots/07_subject_performance.png)
 
----
-
-## ⏱️ Study Hours vs Performance
+### Study Hours Analysis
 
 ![Study Hours Analysis](screenshots/08_study_hours_analysis.png)
 
----
+### Performance Trends
 
-## 📈 Performance Trend
+![Performance Trends](screenshots/09_performance_trend.png)
 
-![Performance Trend](screenshots/09_performance_trend.png)
+### Personalized Learning Insights
 
----
+![Learning Insights](screenshots/10_learning_insight.png)
 
-## 💡 Personalized Learning Insight
+## 🛠️ Technology Stack
 
-![Learning Insight](screenshots/10_learning_insight.png)
+| Technology     | Purpose                                 |
+| -------------- | --------------------------------------- |
+| Python         | Application logic and data processing   |
+| Pandas         | Data analysis and statistical summaries |
+| Streamlit      | Interactive web dashboard               |
+| Matplotlib     | Data visualization                      |
+| ReportLab      | PDF report generation                   |
+| CSV            | Structured data storage                 |
+| Git and GitHub | Version control and project hosting     |
 
----
-
-# 🛠️ Technologies Used
-
-| Technology     | Purpose                 |
-| -------------- | ----------------------- |
-| **Python**     | Application development |
-| **CSV**        | Data storage            |
-| **Pandas**     | Data analysis           |
-| **Matplotlib** | Data visualization      |
-| **ReportLab**  | PDF report generation   |
-| **Streamlit**  | Interactive dashboard   |
-| **Git**        | Version control         |
-| **GitHub**     | Project hosting         |
-
----
-
-# 📁 Project Structure
+## 📁 Project Structure
 
 ```text
 student-performance-analyzer/
-│
+├── data/
+├── reports/
+├── screenshots/
+├── frontend/
 ├── main.py
 ├── dashboard.py
 ├── student.py
@@ -238,155 +151,107 @@ student-performance-analyzer/
 ├── report_generator.py
 ├── pdf_report_generator.py
 ├── utils.py
-│
-├── data/
-│   ├── students.csv
-│   ├── subject_marks.csv
-│   ├── study_hours.csv
-│   └── performance_history.csv
-│
-├── charts/
-│   └── Generated analytical charts
-│
-├── reports/
-│   └── Generated student reports
-│
-├── screenshots/
-│   ├── 01_dashboard_overview.png
-│   ├── 02_student_profile.png
-│   ├── 05_grade_distribution.png
-│   ├── 06_performance_categories.png
-│   ├── 07_subject_performance.png
-│   ├── 08_study_hours_analysis.png
-│   ├── 09_performance_trend.png
-│   └── 10_learning_insight.png
-│
 ├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
----
+The `data/` and `reports/` directories are used for application data and generated reports. The `frontend/` directory contains the project's frontend components.
 
-# ⚙️ Installation & Setup
+## 🚀 Getting Started
 
-## 1. Clone the Repository
+### Prerequisites
+
+* Python 3 installed.
+* Git installed.
+* A terminal or command prompt.
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/ballsohini939-alt/student-performance-analyzer.git
 ```
 
-## 2. Open the Project Directory
+### 2. Navigate to the project
 
 ```bash
 cd student-performance-analyzer
 ```
 
-## 3. Install Dependencies
+### 3. Create a virtual environment
 
 ```bash
-pip install -r requirements.txt
+python -m venv .venv
 ```
 
-## 4. Run the Console Application
+Activate it on Windows:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Activate it on macOS or Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+### 4. Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 5. Run the console application
 
 ```bash
 python main.py
 ```
 
-## 5. Run the Streamlit Dashboard
+### 6. Launch the interactive dashboard
 
 ```bash
 streamlit run dashboard.py
 ```
 
-The dashboard will open in your browser.
+The dashboard should open in your default browser.
 
----
+## 🎯 Learning Outcomes
 
-# 📊 Example Capabilities
+This project demonstrates practical experience with:
 
-The application can provide:
+* Python programming and modular code organization.
+* Data processing with Pandas.
+* Statistical analysis and academic metrics.
+* Data visualization using Matplotlib.
+* Interactive dashboards with Streamlit.
+* File handling and structured data.
+* PDF report generation.
+* Input validation and data integrity.
+* Version control using Git and GitHub.
 
-* Individual student profiles
-* Student rankings
-* Academic performance comparisons
-* Class-level dashboards
-* Subject-wise analysis
-* Grade distribution
-* Performance categories
-* Study-hours analysis
-* Performance trend analysis
-* Statistical analysis using Pandas
-* Correlation analysis
-* Data visualization
-* Personalized learning recommendations
-* Text-based reports
-* Professional PDF reports
+## 🔮 Future Enhancements
 
----
+Potential future improvements include:
 
-# 🎯 Project Goals
+* SQLite database integration.
+* Automated testing.
+* CSV and Excel data import.
+* Additional interactive dashboard filters.
+* Machine-learning-based performance prediction.
+* More advanced predictive analytics.
+* Improved responsive design.
 
-The main goals of this project are to:
+These are planned enhancements rather than claims about existing functionality.
 
-* Practice Python programming
-* Apply Pandas to real-world datasets
-* Understand data analysis workflows
-* Create meaningful data visualizations
-* Build an interactive analytics dashboard
-* Generate useful academic insights
-* Develop a practical portfolio project
-
----
-
-# 🔮 Future Improvements
-
-Planned improvements include:
-
-* 🗄️ SQLite database integration
-* 📊 More interactive dashboard controls
-* 🧪 Automated testing
-* 🤖 Machine-learning-based performance prediction
-* 📈 More advanced predictive analytics
-* 📤 CSV/Excel data import
-* 👨‍🏫 Teacher/admin dashboard
-* 📱 Improved responsive dashboard experience
-
----
-
-# 📌 Project Status
-
-### ✅ Completed Core Analytics + Interactive Dashboard Version
-
-The project currently includes:
-
-* ✅ Student management
-* ✅ Academic analytics
-* ✅ Pandas-based analysis
-* ✅ Data visualization
-* ✅ Student comparison
-* ✅ Performance tracking
-* ✅ Class dashboard
-* ✅ Study-hour analysis
-* ✅ Personalized learning insights
-* ✅ Text report generation
-* ✅ PDF report generation
-* ✅ Interactive Streamlit dashboard
-* ✅ Dashboard screenshots and documentation
-
----
-
-# 👩‍💻 Author
+## 👩‍💻 Author
 
 **Sohini Ball**
+B.Tech Computer Science and Engineering Student | Aspiring Software Engineer
 
-B.Tech CSE Student | Aspiring Software Engineer
-
-This project is part of my journey of learning **Python, data analysis, visualization, and practical software development**.
+[GitHub Profile](https://github.com/ballsohini939-alt) · [LinkedIn Profile](https://www.linkedin.com/in/sohini-ball-698012381/)
 
 ---
 
-## ⭐ If you find this project useful
+⭐ If you find this project interesting, consider starring the repository!
 
-Consider giving the repository a **star ⭐** and exploring the project.
